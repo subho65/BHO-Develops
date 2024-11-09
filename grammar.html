@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grammar Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .timer-bar-container {
+      margin-top: 20px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background-color: #f4f4f4;
+      display: none;
+    }
+
+    .timer-bar {
+      height: 7px;
+      background-color: #ddd;
+      position: relative;
+    }
+
+    .timer-fill {
+      background-color: #4caf50;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      transition: width 1s linear;
+    }
+
+    .countdown-container {
+      text-align: center;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #countdown {
+      font-size: 5em;
+      color: #333;
+    }
+
+    .question-box {
+      position: fixed;
+      display: none;
+      margin-top: 70px;
+      margin-bottom: 60px;
+      width: 90%;
+      max-width: 600px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 1px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      box-sizing: border-box;
+      word-wrap: break-word;
+    }
+
+    #next-btn-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background-color: white;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    #next-btn {
+      display: none;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 1px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+      justify-content: center;
+    }
+
+    #score-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #show-answers-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #wrong-answers {
+      max-height: 450px;
+      overflow-y: auto;
+      width: 80%;
+      padding: 5px;
+      word-wrap: break-word;
+    }
+
+    #wrong-answers p {
+      margin: 5px 0;
+    }
+
+    #wrong-answers hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 10px 0;
+    }
+  
+  </style>
+</head>
+
+<body>
+
+  <!-- Timer Bar -->
+  <div class="timer-bar-container">
+    <div class="timer-bar">
+      <div class="timer-fill" id="timer-fill"></div>
+    </div>
+  </div>
+
+  <div class="countdown-container">
+    <h1 id="countdown">3</h1>
+  </div>
+
+  <div class="question-box">
+    <div class="question-answers-container">
+      <div id="question-container">
+        <div id="question" class="question-text"></div>
+      </div>
+      <div id="answers-container">
+        <div id="answers" class="answers-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="next-btn-container">
+    <button id="next-btn">Next Question</button>
+  </div>
+
+  <div id="score-section">
+    <h2>Your Score: <span id="score"></span>/20</h2>
+    <button id="show-answers-btn">Show Correct Answers</button>
+  </div>
+
+  <div id="wrong-answers"></div>
+
+  <script>
+    let currentQuestionIndex = 0;
+    let questionsSet = [];
+    let score = 0;
+    let wrongAnswers = [];
+    let timerInterval = null;
+    let quizCompleted = false;
+    const maxQuestions = 20;
+
+    const countdownElement = document.getElementById('countdown');
+    const timerBarContainer = document.querySelector('.timer-bar-container');
+
+    let timeLeft = 3;
+    const countdown = setInterval(() => {
+      if (timeLeft > 0) {
+        countdownElement.textContent = timeLeft;
+        timeLeft--;
+      } else {
+        clearInterval(countdown);
+        timerBarContainer.style.display = 'block';
+        loadQuestions();
+      }
+    }, 1000);
+
+    function loadQuestions() {
+      const script = document.createElement('script');
+      script.src = 'https://rawcdn.githack.com/subho65/subhojati/refs/heads/main/questions.js';
+      document.head.appendChild(script);
+      script.onload = () => startQuiz();
+    }
+
+    function startQuiz() {
+      countdownElement.style.display = 'none';
+      document.querySelector('.question-box').style.display = 'block';
+      getRandomQuestions();
+      displayQuestion();
+    }
+
+    function getRandomQuestions() {
+      const shuffled = questions.sort(() => 0.5 - Math.random());
+      questionsSet = shuffled.slice(0, 20);
+    }
+
+    function displayQuestion() {
+      clearInterval(timerInterval);
+
+      const questionObj = questionsSet[currentQuestionIndex];
+      const questionContainer = document.getElementById('question');
+      const answersContainer = document.getElementById('answers');
+
+      // Reset previous answers
+      answersContainer.innerHTML = '';
+
+      // Display the current question
+      questionContainer.innerHTML = `<h3>${currentQuestionIndex + 1}. ${questionObj.question}</h3>`;
+
+      for (let key in questionObj.answers) {
+        answersContainer.innerHTML += `
+                    <div>
+                        <input type="radio" name="answer" value="${key}" id="answer_${key}">
+                        <label for="answer_${key}">${questionObj.answers[key]}</label>
+                    </div>
+                `;
+      }
+
+      document.getElementById('next-btn').style.display = 'none';
+      startTimer();
+
+      document.querySelectorAll('input[name="answer"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+          evaluateAnswer(radio.value);
+          document.getElementById('next-btn').style.display = 'block';
+        });
+      });
+    }
+
+    function startTimer() {
+      let time = 20;
+      const timerFill = document.getElementById('timer-fill');
+      timerFill.style.width = '100%';
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        time--;
+        timerFill.style.width = `${(time / 20) * 100}%`;
+
+        if (time <= 0) {
+          clearInterval(timerInterval);
+          evaluateAnswer(null);
+          showNextQuestion();
+        }
+      }, 1000);
+    }
+
+    function showNextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questionsSet.length) {
+        displayQuestion();
+      } else {
+        quizCompleted = true;
+        showScore();
+      }
+    }
+
+    function evaluateAnswer(selectedValue) {
+      const correctAnswer = questionsSet[currentQuestionIndex].correctAnswer;
+
+      // Check if the answer is correct
+      if (selectedValue === correctAnswer) {
+        score++;
+      } else if (selectedValue !== correctAnswer && selectedValue !== null) {
+        // Check if the wrong answer has already been recorded for this question
+        const alreadyRecorded = wrongAnswers.some(item => item.question === questionsSet[currentQuestionIndex].question);
+
+        // Only add to wrongAnswers if it hasn't been added yet
+        if (!alreadyRecorded) {
+          wrongAnswers.push({
+            question: questionsSet[currentQuestionIndex].question,
+            correctAnswer: questionsSet[currentQuestionIndex].answers[correctAnswer]
+          });
+        }
+      }
+    }
+
+
+    function showScore() {
+    document.querySelector('.question-box').style.display = 'none';
+    document.querySelector('.timer-bar-container').style.display = 'none';
+    document.getElementById('score-section').style.display = 'block';
+
+    // Calculate score based on number of wrong answers
+    const numberOfWrongAnswers = wrongAnswers.length;
+    score = Math.max(maxQuestions - numberOfWrongAnswers, 0); // Ensure score doesn't go below 0
+
+    document.getElementById('score').textContent = score;
+
+    if (wrongAnswers.length > 0) {
+      document.getElementById('show-answers-btn').style.display = 'block';
+    }
+
+    if (quizCompleted) {
+      document.getElementById('next-btn').textContent = 'Restart Quiz';
+      document.getElementById('next-btn').addEventListener('click', restartQuiz);
+    }
+  }
+    document.getElementById('next-btn').addEventListener('click', showNextQuestion);
+
+    document.getElementById('show-answers-btn').addEventListener('click', () => {
+      const wrongAnswersDiv = document.getElementById('wrong-answers');
+      document.querySelector('.timer-bar-container').style.display = 'none';
+      document.getElementById('score-section').style.display = 'none';
+      document.getElementById('show-answers-btn').style.display = 'none';
+
+      wrongAnswersDiv.innerHTML = ''; // Clear existing content
+
+      wrongAnswers.forEach((item, index) => {
+        wrongAnswersDiv.innerHTML += `
+                    <p><strong>Q${index + 1}: ${item.question}</strong></p>
+                    <p>Correct Answer: ${item.correctAnswer}</p><hr>
+                `;
+      });
+    });
+
+   
+
+    function restartQuiz() {
+      location.reload(); // Reload the page to restart the quiz
+    }
+    // Handle "Next Question" button click if it shows up
+  </script>
+</body>
+
+</html>

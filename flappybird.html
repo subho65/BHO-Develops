@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="https://raw.githack.com/subho65/subhojati/refs/heads/main/flappy.css" />
+  <title>Flappy Bird Game</title>
+  
+</head>
+
+<body>
+ <div id="loaderOverlay">
+  <div id="loader">
+    <img src="https://i.imghippo.com/files/xCrN5256ehA.png" alt="Loading..." id="loaderBird" />
+  </div>
+</div>
+
+  <canvas id="gameCanvas"></canvas>
+  <div class="score" id="scoreDisplay">Score: 0</div>
+  <div class="overlay" id="overlay">
+    <div id="gameOverText">Game Over</div>
+    <div id="finalScore">Final Score: 0</div>
+    <button class="button" id="restartButton" onclick="restartGame()">Restart</button>
+  </div>
+  <button class="button" id="startButton" onclick="startGame()">Start</button>
+
+  <script src="https://raw.githack.com/subho65/subhojati/refs/heads/main/Flappy.js">
+    
+  </script>
+</body>
+
+</html>

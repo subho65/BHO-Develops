@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Note List</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .swal2-title {
+      font-size: 20px;
+      /* Decrease title size */
+    }
+
+    .swal2-content {
+      font-size: 20px;
+      margin: 0;
+      /* Decrease content size */
+    }
+
+    /* Header Styles */
+    header {
+      background-color: blue;
+      color: white;
+      text-align: left;
+      font-size: 12px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding-left: 10px;
+    }
+
+    /* Body Padding to avoid overlap with the header */
+    body {
+      margin: 0;
+      padding-top: 50px;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Add Note Button */
+    #addNoteBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 35px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    #addNoteBtn:hover {
+      background-color: darkred;
+    }
+
+    /* Notes List */
+    .notes-container {
+      padding: 10px;
+      margin: 0;
+    }
+
+    .note {
+      background-color: #f1f1f1;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #noteText {
+      font-size: 15px;
+      width: 300px;
+      height: 600px;
+      resize: none;
+      margin: 0;
+      /* Remove margin */
+
+    }
+
+    #editNoteText {
+      font-size: 15px;
+      width: 300px;
+      height: 600px;
+      resize: none;
+      margin: 0;
+      /* Remove margin */
+
+    }
+
+    /* Three Dot Menu */
+    .note-menu {
+      cursor: pointer;
+      position: relative;
+      font-size: 24px;
+      /* Increase the font size for the three dots */
+      line-height: 1;
+    }
+
+    .note-menu-options {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .note-menu-options button {
+      display: block;
+      padding: 10px;
+      width: 100px;
+      border: none;
+      background-color: white;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .note-menu-options button:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Note List</h1>
+  </header>
+
+  <div class="notes-container" id="notesContainer"></div>
+
+  <button id="addNoteBtn">+</button>
+
+  <script>
+    // Load notes from local storage on page load
+    window.onload = loadNotes;
+
+    document.getElementById('addNoteBtn').addEventListener('click', function() {
+      Swal.fire({
+        title: 'Add a new note',
+        html: '<textarea id="noteText" class="swal2-textarea" placeholder="Write your note here..."></textarea>',
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        preConfirm: () => {
+          const noteText = document.getElementById('noteText').value;
+          if (!noteText) {
+            Swal.showValidationMessage('Please enter a note');
+            return;
+          }
+          return noteText;
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          addNote(result.value);
+        }
+      });
+    });
+
+    function addNote(fullText) {
+      const notesContainer = document.getElementById('notesContainer');
+
+      // Extract headline from the first few words of the note
+      const headline = fullText.split(' ').slice(0, 5).join(' ') + '...';
+
+      // Create a new note element
+      const noteElement = document.createElement('div');
+      noteElement.classList.add('note');
+
+      const noteText = document.createElement('div');
+      noteText.classList.add('note-text');
+      noteText.innerText = headline;
+      noteText.dataset.fullText = fullText; // Store the full text
+      noteText.onclick = () => openNote(fullText);
+
+      const noteMenu = document.createElement('div');
+      noteMenu.classList.add('note-menu');
+      noteMenu.innerHTML = '⋮';
+      noteMenu.onclick = (event) => toggleMenu(noteMenu, event);
+
+      const menuOptions = document.createElement('div');
+      menuOptions.classList.add('note-menu-options');
+
+      // Edit Button
+      const editButton = document.createElement('button');
+      editButton.innerText = 'Edit';
+      editButton.onclick = () => editNote(noteText, noteElement);
+
+      // Delete Button
+      const deleteButton = document.createElement('button');
+      deleteButton.innerText = 'Delete';
+      deleteButton.onclick = () => {
+        notesContainer.removeChild(noteElement);
+        updateLocalStorage(); // Update local storage after deletion
+      };
+
+      // Copy Button
+      const copyButton = document.createElement('button');
+      copyButton.innerText = 'Copy';
+      copyButton.onclick = (event) => {
+        const currentFullText = noteText.dataset.fullText; // Use noteText instead of noteTextElement
+
+        // Close the menu before copying
+        const noteMenu = event.target.closest('.note-menu'); // Get the closest note menu
+        toggleMenu(noteMenu, event); // Close the menu
+
+        navigator.clipboard.writeText(currentFullText).then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Copied!',
+            text: 'The note has been copied to your clipboard.',
+            showConfirmButton: false,
+            timer: 1500 // Auto-close after 1.5 seconds
+          });
+        }).catch(err => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: 'Failed to copy the note.',
+            showConfirmButton: true
+          });
+        });
+      };
+
+      menuOptions.appendChild(editButton);
+      menuOptions.appendChild(deleteButton);
+      menuOptions.appendChild(copyButton);
+      noteMenu.appendChild(menuOptions);
+
+      noteElement.appendChild(noteText);
+      noteElement.appendChild(noteMenu);
+      notesContainer.appendChild(noteElement);
+
+      updateLocalStorage(); // Save to local storage when a new note is added
+    }
+
+    function editNote(noteTextElement, noteElement) {
+      const originalFullText = noteTextElement.dataset.fullText; // Get the current full text
+
+      Swal.fire({
+        title: 'Edit your note',
+        html: `<textarea id="editNoteText" class="swal2-textarea">${originalFullText}</textarea>`,
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        preConfirm: () => {
+          const editedText = document.getElementById('editNoteText').value;
+          if (!editedText) {
+            Swal.showValidationMessage('Please enter a note');
+            return;
+          }
+          return editedText;
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const editedText = result.value;
+          const newHeadline = editedText.split(' ').slice(0, 5).join(' ') + '...';
+          noteTextElement.innerText = newHeadline; // Update headline
+          noteTextElement.dataset.fullText = editedText; // Update the full text
+          noteTextElement.onclick = () => openNote(editedText); // Update click action with new text
+
+          updateLocalStorage(); // Update local storage after editing
+        }
+      });
+    }
+
+    function toggleMenu(noteMenu, event) {
+      const menu = noteMenu.querySelector('.note-menu-options');
+      const allMenus = document.querySelectorAll('.note-menu-options');
+      allMenus.forEach(m => m.style.display = 'none'); // Close all other menus
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+      event.stopPropagation(); // Prevent closing when clicking inside the menu
+    }
+
+    function openNote(fullText) {
+      // Display the full note content in a modal
+      Swal.fire({
+        title: 'Note',
+        html: `<div style="text-align: left;">${fullText}</div>`, // Use a div with left alignment
+        confirmButtonText: 'Close'
+      });
+    }
+
+    function updateLocalStorage() {
+      const notesContainer = document.getElementById('notesContainer');
+      const notes = Array.from(notesContainer.children).map(noteElement => {
+        const noteText = noteElement.querySelector('.note-text');
+        return noteText.dataset.fullText; // Store the full text in local storage
+      });
+      localStorage.setItem('notes', JSON.stringify(notes)); // Save notes to local storage
+    }
+
+    function loadNotes() {
+      const notes = JSON.parse(localStorage.getItem('notes')) || [];
+      notes.forEach(note => addNote(note)); // Load notes from local storage
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function() {
+      const allMenus = document.querySelectorAll('.note-menu-options');
+      allMenus.forEach(menu => menu.style.display = 'none');
+    });
+
+    // Prevent menu from closing if clicking inside the menu
+    document.addEventListener('click', function(event) {
+      const isClickInsideMenu = event.target.closest('.note-menu-options');
+      if (isClickInsideMenu) {
+        event.stopPropagation();
+      }
+    });
+  </script>
+</body>
+
+</html>

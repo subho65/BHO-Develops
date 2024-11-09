@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      href="https://i.imghippo.com/files/dZxI61729062542.png"
+      type="image/x-icon"
+    />
+    <title>Report a Problem</title>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        background-color: #333;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .hamburger {
+        cursor: pointer;
+        font-size: 24px;
+        color: white;
+      }
+
+      /* Menu styles */
+      .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background-color: #333;
+        width: 250px;
+        padding: 20px;
+        color: white;
+      }
+
+      .menu a {
+        color: white;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid #444;
+      }
+
+      .menu a:hover {
+        background-color: #444;
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      h1 {
+        font-size: 30px;
+        color: #333;
+        margin-top: 5px;
+        margin-bottom: 50px;
+        text-align: center;
+      }
+
+      /* Form styles */
+      .form-container {
+        max-width: 600px;
+        margin: 10px auto;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      .form-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .form-container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+
+      .form-container textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+
+      .form-container button {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 16px;
+      }
+
+      .form-container button:hover {
+        background-color: #555;
+      }
+
+      /* Loading message styles */
+      .loading-message {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+        color: #333;
+      }
+
+      @media (min-width: 600px) {
+        .menu {
+          display: flex;
+          flex-direction: row;
+          position: static;
+          width: auto;
+          padding: 0;
+        }
+        .hamburger {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar with hamburger -->
+    <div class="navbar">
+      <div class="hamburger" id="hamburger">&#9776;</div>
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="report.html">Report a Problem</a>
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-container">
+      <h1>Report a Problem</h1>
+      <form id="report-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Your Name" required />
+
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="Your Email Address"
+          required
+        />
+
+        <label for="problem">Problem:</label>
+        <textarea
+          id="problem"
+          placeholder="Describe your problem here"
+          required
+        ></textarea>
+
+        <button id="submit-btn" type="submit">Submit</button>
+      </form>
+
+      <div id="loading" class="loading-message">
+        Submitting your problem, please wait...
+      </div>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+    ></script>
+
+    <!-- JavaScript to toggle the menu and handle form submission -->
+    <script>
+      (function () {
+        emailjs.init("up8bWosZV2LMu7B_A");
+      })();
+
+      const hamburger = document.getElementById("hamburger");
+      const menu = document.getElementById("menu");
+      const form = document.getElementById("report-form");
+      const submitBtn = document.getElementById("submit-btn");
+      const loadingMessage = document.getElementById("loading");
+
+      document
+        .getElementById("hamburger")
+        .addEventListener("click", function (event) {
+          var menu = document.getElementById("menu");
+          menu.classList.toggle("active");
+          event.stopPropagation(); // Prevents click event on hamburger from propagating
+        });
+
+      // Hide the menu if clicking outside
+      document.addEventListener("click", function (event) {
+        var menu = document.getElementById("menu");
+        var hamburger = document.getElementById("hamburger");
+        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+          menu.classList.remove("active");
+        }
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const problem = document.getElementById("problem").value.trim();
+
+        if (name && email && problem) {
+          loadingMessage.style.display = "block";
+          submitBtn.disabled = true;
+
+          const templateParams = {
+            user_name: name,
+            user_email: email,
+            problem_description: problem,
+          };
+
+          emailjs
+            .send("service_znaosul", "template_66iob9t", templateParams)
+            .then(
+              function (response) {
+                console.log("SUCCESS!", response.status, response.text);
+                alert("Your problem has been submitted. Thank you!");
+                loadingMessage.style.display = "none";
+                submitBtn.disabled = false;
+                form.reset();
+              },
+              function (error) {
+                console.log("FAILED...", error);
+                alert("Failed to submit the problem. Please try again later.");
+                loadingMessage.style.display = "none";
+                submitBtn.disabled = false;
+              }
+            );
+        } else {
+          alert("Please fill in all the fields.");
+        }
+      });
+    </script>
+  </body>
+</html>

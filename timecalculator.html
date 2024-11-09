@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-size: 15px;
+            /* Smaller font size */
+            margin-bottom: 5px;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+
+        }
+
+        .input-container .input-group {
+            flex: 1;
+            margin: 0 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="number"],
+        select {
+            width: 70%;
+            /* Full width within the container */
+            padding: 5px;
+            text-align: center;
+            justify-content: center;
+            font-size: 14px;
+            /* Smaller font size */
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        #output {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .additional-inputs {
+            display: none;
+            margin-top: 15px;
+
+        }
+
+        select {
+            text-align: center;
+            margin: 0 auto;
+            /* Center the select element horizontally */
+        }
+
+        .additional-inputs .additional-input-group {
+            text-align: center;
+            /* Center align the text within the input groups */
+        }
+
+        .additional-inputs .input-group {
+            display: inline-block;
+            /* Make input-group inline-block to center align */
+            margin: 0 10px;
+            /* Optional: Add spacing between input groups */
+        }
+
+        .additional-inputs input[type="number"] {
+            width: 100%;
+            /* Adjust the width as needed */
+        }
+
+        h5 {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Time Calculator</h1>
+        <form id="timeForm">
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="days">Days:</label>
+                    <input type="number" id="days" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="hours">Hours:</label>
+                    <input type="number" id="hours" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="minutes">Minutes:</label>
+                    <input type="number" id="minutes" min="0">
+                </div>
+                <div class="input-group">
+                    <label for="seconds">Seconds:</label>
+                    <input type="number" id="seconds" min="0">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="operation">Operation:</label>
+                <select id="operation" required>
+                    <option>none</option>
+                    <option value="add">+ Add Time</option>
+                    <option value="subtract">- Subtract Time</option>
+                    <option value="multiply">× Multiply by a Number</option>
+                    <option value="divide-number">÷ Divide by a Number</option>
+                    <option value="divide-time">÷ Divide by Time</option>
+                </select>
+            </div>
+            <div id="additional-inputs" class="additional-inputs">
+                <div id="addSubtractTime" class="additional-input-group">
+                    <div class="input-container">
+                        <div class="input-group">
+                            <label for="addSubtractDays">Days:</label>
+                            <input type="number" id="addSubtractDays" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="addSubtractHours">Hours:</label>
+                            <input type="number" id="addSubtractHours" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="addSubtractMinutes">Minutes:</label>
+                            <input type="number" id="addSubtractMinutes" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="addSubtractSeconds">Seconds:</label>
+                            <input type="number" id="addSubtractSeconds" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div id="multiplyByNumber" class="additional-input-group">
+                    <div class="input-group">
+                        <label for="multiplyFactor">Multiply Factor:<br /><br></label>
+                        <input type="number" id="multiplyFactor" min="0" step="0.01">
+                    </div>
+                </div><br />
+                <div id="divideByNumber" class="additional-input-group">
+                    <div class="input-group">
+                        <label for="divideFactor">Divide Factor:<br /><br /></label>
+                        <input type="number" id="divideFactor" min="0" step="0.01">
+                    </div>
+                </div><br />
+                <div id="divideByTime" class="additional-input-group">
+                    <div class="input-container">
+                        <div class="input-group">
+                            <label for="divideDays">Days:</label>
+                            <input type="number" id="divideDays" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="divideHours">Hours:</label>
+                            <input type="number" id="divideHours" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="divideMinutes">Minutes:</label>
+                            <input type="number" id="divideMinutes" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="divideSeconds">Seconds:</label>
+                            <input type="number" id="divideSeconds" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="result">
+            <h5>Answer:</h5>
+            <p id="output"></p>
+        </div>
+    </div>
+    <script>
+        const operationSelect = document.getElementById('operation');
+        const additionalInputs = document.getElementById('additional-inputs');
+        const addSubtractTime = document.getElementById('addSubtractTime');
+        const multiplyByNumber = document.getElementById('multiplyByNumber');
+        const divideByNumber = document.getElementById('divideByNumber');
+        const divideByTime = document.getElementById('divideByTime');
+
+        operationSelect.addEventListener('change', function () {
+            additionalInputs.style.display = 'block';
+            addSubtractTime.style.display = 'none';
+            multiplyByNumber.style.display = 'none';
+            divideByNumber.style.display = 'none';
+            divideByTime.style.display = 'none';
+
+            switch (operationSelect.value) {
+                case 'add':
+                case 'subtract':
+                    addSubtractTime.style.display = 'block';
+                    break;
+                case 'multiply':
+                    multiplyByNumber.style.display = 'block';
+                    break;
+                case 'divide-number':
+                    divideByNumber.style.display = 'block';
+                    break;
+                case 'divide-time':
+                    divideByTime.style.display = 'block';
+                    break;
+            }
+        });
+
+        document.getElementById('timeForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const days = parseInt(document.getElementById('days').value) || 0;
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+
+            let resultDays = days;
+            let resultHours = hours;
+            let resultMinutes = minutes;
+            let resultSeconds = seconds;
+
+            switch (operationSelect.value) {
+                case 'add':
+                case 'subtract':
+                    const addSubtractDays = parseInt(document.getElementById('addSubtractDays').value) || 0;
+                    const addSubtractHours = parseInt(document.getElementById('addSubtractHours').value) || 0;
+                    const addSubtractMinutes = parseInt(document.getElementById('addSubtractMinutes').value) || 0;
+                    const addSubtractSeconds = parseInt(document.getElementById('addSubtractSeconds').value) || 0;
+
+                    const sign = operationSelect.value === 'add' ? 1 : -1;
+
+                    resultSeconds += sign * addSubtractSeconds;
+                    resultMinutes += sign * addSubtractMinutes + Math.floor(resultSeconds / 60);
+                    resultSeconds = (resultSeconds % 60 + 60) % 60;
+                    resultHours += sign * addSubtractHours + Math.floor(resultMinutes / 60);
+                    resultMinutes = (resultMinutes % 60 + 60) % 60;
+                    resultDays += sign * addSubtractDays + Math.floor(resultHours / 24);
+                    resultHours = (resultHours % 24 + 24) % 24;
+                    break;
+
+                case 'multiply':
+                    const multiplyFactor = parseFloat(document.getElementById('multiplyFactor').value) || 0;
+
+                    const totalSecondsMult = (days * 86400 + hours * 3600 + minutes * 60 + seconds) * multiplyFactor;
+
+                    resultDays = Math.floor(totalSecondsMult / 86400);
+                    resultHours = Math.floor((totalSecondsMult % 86400) / 3600);
+                    resultMinutes = Math.floor((totalSecondsMult % 3600) / 60);
+                    resultSeconds = Math.floor(totalSecondsMult % 60);
+                    break;
+
+                case 'divide-number':
+                    const divideFactor = parseFloat(document.getElementById('divideFactor').value) || 0;
+
+                    if (divideFactor !== 0) {
+                        const totalSecondsDiv = (days * 86400 + hours * 3600 + minutes * 60 + seconds) / divideFactor;
+
+                        resultDays = Math.floor(totalSecondsDiv / 86400);
+                        resultHours = Math.floor((totalSecondsDiv % 86400) / 3600);
+                        resultMinutes = Math.floor((totalSecondsDiv % 3600) / 60);
+                        resultSeconds = Math.floor(totalSecondsDiv % 60);
+                    } else {
+                        alert("Division by zero is not allowed!");
+                        return;
+                    }
+                    break;
+
+                case 'divide-time':
+                    const divideDays = parseInt(document.getElementById('divideDays').value) || 0;
+                    const divideHours = parseInt(document.getElementById('divideHours').value) || 0;
+                    const divideMinutes = parseInt(document.getElementById('divideMinutes').value) || 0;
+                    const divideSeconds = parseInt(document.getElementById('divideSeconds').value) || 0;
+
+                    const totalSeconds1 = days * 86400 + hours * 3600 + minutes * 60 + seconds;
+                    const totalSeconds2 = divideDays * 86400 + divideHours * 3600 + divideMinutes * 60 + divideSeconds;
+
+                    if (totalSeconds2 !== 0) {
+                        const quotient = totalSeconds1 / totalSeconds2;
+
+                        const wholeTimes = Math.floor(quotient);
+                        const remainderSeconds = totalSeconds1 - (wholeTimes * totalSeconds2);
+
+                        let remainderDays = Math.floor(remainderSeconds / 86400);
+                        let remainderHours = Math.floor((remainderSeconds % 86400) / 3600);
+                        let remainderMinutes = Math.floor((remainderSeconds % 3600) / 60);
+                        let remainderSec = Math.floor(remainderSeconds % 60);
+
+                        document.getElementById('output').innerHTML = `  = ${quotient.toFixed(4)} times<br/><br> or <br/> = ${wholeTimes} times with a remainder of<br><br /> ${remainderDays} <em>days</em> ${remainderHours} <em>hours</em> ${remainderMinutes} <em>minutes</em> ${remainderSec} <em>seconds</em> `;
+                        return;
+                    } else {
+                        alert("Division by zero is not allowed!");
+                        return;
+                    }
+            }
+
+            document.getElementById('output').textContent = ` ${resultDays} days, ${resultHours} hours, ${resultMinutes} minutes, ${resultSeconds} seconds`;
+        });
+
+    </script>
+</body>
+
+</html>

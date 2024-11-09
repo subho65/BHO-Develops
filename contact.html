@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="https://i.imghippo.com/files/dZxI61729062542.png"
+      type="image/x-icon"
+    />
+    <title>Contact</title>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        background-color: #333;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .hamburger {
+        cursor: pointer;
+        font-size: 24px;
+        color: white;
+      }
+
+      /* Menu styles */
+      .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background-color: #333;
+        width: 250px;
+        padding: 20px;
+        color: white;
+      }
+
+      .menu a {
+        color: white;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid #444;
+      }
+
+      .menu a:hover {
+        background-color: #444;
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      /* Profile Section */
+      .profile {
+        text-align: center;
+        padding: 50px;
+      }
+
+      .profile img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2),
+          0 6px 20px rgba(0, 0, 0, 0.19);
+        transition: transform 0.3s;
+      }
+
+      .profile img:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3),
+          0 8px 30px rgba(0, 0, 0, 0.25);
+      }
+
+      .profile h1 {
+        font-size: 24px;
+        color: #333;
+        margin-top: 15px;
+      }
+
+      .profile p {
+        font-size: 16px;
+        color: #555;
+        max-width: 600px;
+        margin: 10px auto;
+      }
+
+      .profile a {
+        color: #333;
+        text-decoration: underline;
+      }
+
+      @media (min-width: 600px) {
+        .menu {
+          display: flex;
+          flex-direction: row;
+          position: static;
+          width: auto;
+          padding: 0;
+        }
+        .hamburger {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar with hamburger -->
+    <div class="navbar">
+      <div class="hamburger" id="hamburger">&#9776;</div>
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="report.html">Report a Problem</a>
+      </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="profile">
+      <img
+        src="https://i.imghippo.com/files/dZxI61729062542.png"
+        alt="Contact"
+        border="0"
+      />
+      <h1>Contact Us</h1>
+      <p>
+        If you have any questions, feel free to contact us directly via email or
+        you can also report your problem by clicking
+        <a href="report.html">here</a>.
+      </p>
+      <p>
+        Email: <a href="mailto: bhodevelops@gmail.com">bhodevelops@gmail.com</a>
+      </p>
+    </div>
+
+    <!-- JavaScript to toggle the menu -->
+    <script>
+      document
+        .getElementById("hamburger")
+        .addEventListener("click", function (event) {
+          var menu = document.getElementById("menu");
+          menu.classList.toggle("active");
+          event.stopPropagation(); // Prevents click event on hamburger from propagating
+        });
+
+      // Hide the menu if clicking outside
+      document.addEventListener("click", function (event) {
+        var menu = document.getElementById("menu");
+        var hamburger = document.getElementById("hamburger");
+        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+          menu.classList.remove("active");
+        }
+      });
+    </script>
+  </body>
+</html>

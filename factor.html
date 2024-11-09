@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Factors</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #89fffd, #ef32d9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #444;
+        }
+        textarea {
+            width: calc(100% - 24px);
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: none;
+            font-size: 16px;
+            color: #333;
+            box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #ef32d9;
+            outline: none;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+        }
+        button {
+            background-color: #ef32d9;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s;
+            width: 100%;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: #89fffd;
+            transform: scale(1.05);
+        }
+        button:focus {
+            outline: none;
+        }
+        button:active {
+            background-color: #45a3e5;
+            transform: scale(0.98);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .swal2-actions {
+            display: flex;
+            justify-content: center;
+        }
+        .swal2-actions button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .swal2-confirm {
+            background-color: #ef32d9;
+            color: white;
+        }
+        .swal2-cancel {
+            background-color: #d33;
+            color: white;
+        }
+        .swal2-confirm:hover {
+            background-color: #89fffd;
+        }
+        .swal2-cancel:hover {
+            background-color: #ff5e5e;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Common Factors</h2>
+    <textarea id="numbers" placeholder="Enter numbers separated by commas"></textarea>
+    <div class="buttons">
+        <button onclick="findCommonFactors()">Common Factors</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function findCommonFactors() {
+    var input = document.getElementById('numbers').value;
+    var numbers = input.split(',').map(num => parseInt(num.trim()));
+
+    var result = '';
+    var steps = '';
+
+    if (numbers.some(isNaN)) {
+        result = 'Please enter valid numbers.';
+    } else {
+        var factorsMap = {};
+        var allFactorsMap = {};
+        var allFactors = [];
+
+        numbers.forEach(function(num) {
+            var factors = [];
+            for (var i = 1; i <= num; i++) {
+                if (num % i === 0) {
+                    factors.push(i);
+                }
+            }
+            steps += 'Factors of ' + num + ': ' + factors.join(', ') + '<br>' + '<br>' ;
+            factors.forEach(function(factor) {
+                if (!factorsMap[factor]) {
+                    factorsMap[factor] = 1;
+                } else {
+                    factorsMap[factor]++;
+                }
+                if (!allFactorsMap[factor]) {
+                    allFactorsMap[factor] = true;
+                    allFactors.push(factor);
+                }
+            });
+        });
+
+        var commonFactors = [];
+        for (var factor in factorsMap) {
+            if (factorsMap.hasOwnProperty(factor) && factorsMap[factor] === numbers.length) {
+                commonFactors.push(factor);
+            }
+        }
+
+        result = commonFactors.length > 0 ? 'Common factors: ' + commonFactors.join(', ') : 'No common factors found.';
+    }
+
+    Swal.fire({
+        title: 'Result',
+        text: result,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Show Steps',
+        cancelButtonText: 'Close',
+        confirmButtonClass: 'swal2-confirm',
+        cancelButtonClass: 'swal2-cancel',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Steps',
+                html: steps,
+                icon: 'info',
+                confirmButtonText: 'OK',
+                confirmButtonClass: 'swal2-confirm',
+            });
+        }
+    });
+}
+</script>
+
+</body>
+</html>

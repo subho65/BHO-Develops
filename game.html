@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sliding Puzzle</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+</head>
+<style>
+  body {
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url(' https://i.ibb.co/ScMmMDg/97aeb934143f4987a37600d4e2642f2d.webp');
+    backdrop-filter: blur(2px);
+  }
+
+  .container {
+    text-align: center;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    /* Reduced padding */
+    width: 80%;
+    /* Reduced width */
+    box-shadow: 2px 10px 10px black,
+      inset -5px -5px 10px black,
+      inset 5px 5px 10px white;
+    max-width: 400px;
+    /* Reduced maximum width */
+    background-image: url('https://i.ibb.co/30SQ3hQ/pexels-fwstudio-33348-129733.jpg');
+  }
+
+
+  h1 {
+    font-size: 3rem;
+    color: navajowhite;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 2px skyblue;
+  }
+
+  .button-container {
+    margin: 20px 0;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-image: url('https://i.ibb.co/ScMmMDg/97aeb934143f4987a37600d4e2642f2d.webp');
+    box-shadow: 2px 10px 10px black,
+      inset -2px -2px 5px black,
+      inset 2px 2px 5px white;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  #puzzle-container {
+    display: grid;
+    gap: 5px;
+    margin-top: 20px;
+    background-image: url('https://i.ibb.co/30SQ3hQ/pexels-fwstudio-33348-129733.jpg');
+    border: 10px solid sandybrown;
+    box-shadow: 2px 10px 10px black,
+      inset -5px -5px 10px black,
+      inset 5px 5px 10px white;
+    border-radius: 2px;
+    aspect-ratio: 1/1;
+
+  }
+
+  .tile {
+    background-color: #007bff;
+    color: navajowhite;
+    text-shadow: -1px -1px 2px rgba(255, 255, 255, 0.7),
+      /* Light inset shadow */
+      1px 1px 2px rgba(0, 0, 0, 0.7);
+    /* Dark inset shadow */
+    font-size: calc(4rem - (1rem * (var(--size) / 4)));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    box-shadow: 2px 10px 10px black,
+      inset -2px -2px 5px black,
+      inset 2px 2px 5px white;
+    background-image: url('https://i.ibb.co/ScMmMDg/97aeb934143f4987a37600d4e2642f2d.webp');
+    aspect-ratio: 1/1;
+    /* Ensures square shape */
+  }
+
+  .tile:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  .empty {
+    background-color: transparent;
+    cursor: default;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <h1>Sliding Puzzle</h1>
+    <div class="controls">
+      <button id="reset-btn">Reset Game</button>
+    </div>
+    <div id="puzzle-container"></div>
+  </div>
+  <audio id="move-sound" src="move-sound.mp3"></audio>
+  <script src="script.js"></script>
+  <script>
+    let size;
+    let tiles = [];
+    let startTime;
+    let timerInterval;
+    let gameStarted = false;
+
+    const moveSound = new Audio('move-sound.mp3');
+    moveSound.preload = 'auto';
+
+    function initializeGame(selectedSize) {
+      size = selectedSize;
+      tiles = createTiles(size);
+      renderPuzzle();
+      document.getElementById('reset-btn').addEventListener('click', resetGame);
+    }
+
+    function createTiles(size) {
+      const tiles = [];
+      for (let i = 0; i < size * size - 1; i++) {
+        tiles.push(i + 1);
+      }
+      tiles.push(null); // Empty tile at the last position
+      shuffle(tiles);
+
+      // Ensure the blank tile remains in the last position
+      if (tiles.indexOf(null) !== tiles.length - 1) {
+        [tiles[tiles.indexOf(null)], tiles[tiles.length - 1]] = [tiles[tiles.length - 1], tiles[tiles.indexOf(null)]];
+      }
+
+      return tiles;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 2; i > 0; i--) { // Avoid shuffling the last tile (empty one)
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function renderPuzzle() {
+      const puzzleContainer = document.getElementById('puzzle-container');
+      puzzleContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+      puzzleContainer.style.setProperty('--size', size);
+      puzzleContainer.innerHTML = '';
+
+      tiles.forEach((tile, index) => {
+        const tileElement = document.createElement('div');
+        tileElement.className = 'tile';
+        if (tile === null) {
+          tileElement.classList.add('empty');
+        } else {
+          tileElement.innerText = tile;
+          tileElement.addEventListener('click', () => moveTile(index));
+        }
+        puzzleContainer.appendChild(tileElement);
+      });
+
+      // Check if the puzzle is completed after rendering
+      if (isPuzzleSolved()) {
+        stopTimer();
+        showCompletionMessage();
+      }
+    }
+
+    function moveTile(index) {
+      const emptyIndex = tiles.indexOf(null);
+      const validMoves = [emptyIndex - 1, emptyIndex + 1, emptyIndex - size, emptyIndex + size];
+
+      if (validMoves.includes(index)) {
+        if (!gameStarted) {
+          startTimer(); // Start the timer on the first move
+          gameStarted = true;
+        }
+        [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+
+        moveSound.currentTime = 0;
+        moveSound.play();
+        renderPuzzle();
+      }
+    }
+
+    function isPuzzleSolved() {
+      for (let i = 0; i < tiles.length - 1; i++) {
+        if (tiles[i] !== i + 1) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function startTimer() {
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        console.log(`Time elapsed: ${elapsedTime} seconds`);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function showCompletionMessage() {
+      const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+      Swal.fire({
+        title: 'Puzzle Completed!',
+        text: `You completed the puzzle in ${elapsedTime} seconds.`,
+        icon: 'success',
+        confirmButtonText: 'Awesome!'
+
+      });
+    }
+
+    function resetGame() {
+      stopTimer();
+      gameStarted = false;
+      initializeGame(size);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const size = parseInt(urlParams.get('size'));
+      if (!isNaN(size) && [3, 4, 5, 6].includes(size)) {
+        initializeGame(size);
+      } else {
+        alert('Invalid puzzle size.');
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+</body>
+
+</html>

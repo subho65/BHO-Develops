@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Length Conversion Tool</title>
+    <style>
+        /* Global Styles */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #003135 0%, #024950 100%);
+            color: #AFDDE5;
+            /* Light Cyan */
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            color: #afdde5;
+            /* Aqua */
+            margin-bottom: 20px;
+            font-size: 25px;
+            font-weight: 9l00;
+            -webkit-text-stroke: 1px black;
+            text-shadow: 1px 1px 4px white;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 30px;
+            border: 1px solid #AFDDE5;
+            /* Light Cyan */
+            border-radius: 15px;
+            background-color: #024950;
+            /* Deep Teal */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            width: 300px;
+        }
+
+        /* Label Styles */
+        label {
+            font-size: 18px;
+            font-weight: 500;
+            color: #AFDDE5;
+            /* Light Cyan */
+        }
+
+        /* Input and Select Styles */
+        input,
+        select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #AFDDE5;
+            /* Light Cyan */
+            background-color: #003135;
+            /* Dark Teal */
+            color: #AFDDE5;
+            /* Light Cyan */
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* Button Styles */
+        #convert-btn {
+            background-color: #964734;
+            /* Copper */
+            color: #AFDDE5;
+            /* Light Cyan */
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        #convert-btn:hover {
+            background-color: #0FA4AF;
+            /* Aqua */
+            transform: scale(1.05);
+        }
+
+        /* Result Styles */
+        #result {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #converted-length {
+            font-size: 24px;
+            font-weight: 700;
+            color: #964734;
+            /* Copper */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Custom style for SweetAlert2 text color */
+        .swal-content {
+            color: #964734;
+            /* Brown color */
+        }
+    </style>
+    <!-- SweetAlert2 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <h1>LENGTH CONVERSION TOOL</h1>
+    <form>
+        <label for="length-input">Length:</label>
+        <input type="number" id="length-input" name="length-input" placeholder="Enter length" required>
+
+        <label for="from-unit">From:</label>
+        <select id="from-unit" name="from-unit">
+            <option value="m">Meters</option>
+            <option value="cm">Centimeters</option>
+            <option value="km">Kilometers</option>
+            <option value="in">Inches</option>
+            <option value="ft">Feet</option>
+            <option value="yd">Yards</option>
+            <option value="mi">Miles</option>
+        </select>
+
+        <label for="to-unit">To:</label>
+        <select id="to-unit" name="to-unit">
+            <option value="m">Meters</option>
+            <option value="cm">Centimeters</option>
+            <option value="km">Kilometers</option>
+            <option value="in">Inches</option>
+            <option value="ft">Feet</option>
+            <option value="yd">Yards</option>
+            <option value="mi">Miles</option>
+        </select>
+
+        <button type="submit" id="convert-btn">Convert</button>
+    </form>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            convertLength();
+        });
+
+        function convertLength() {
+            const lengthInput = parseFloat(document.getElementById("length-input").value);
+            const inputUnit = document.getElementById("from-unit").value;
+            const outputUnit = document.getElementById("to-unit").value;
+
+            const conversionRates = {
+                "m": 1,
+                "cm": 100,
+                "km": 0.001,
+                "in": 39.3701,
+                "ft": 3.28084,
+                "yd": 1.09361,
+                "mi": 0.000621371
+            };
+
+            let lengthInMeters = lengthInput / conversionRates[inputUnit];
+            let convertedLength = lengthInMeters * conversionRates[outputUnit];
+
+            Swal.fire({
+                title: 'Conversion Result',
+                text: `${ lengthInput.toFixed(2) } ${ inputUnit } is equal to ${ convertedLength.toFixed(2) } ${ outputUnit }`,
+                icon: 'info',
+                confirmButtonText: 'OK',
+                customClass: {
+                container: 'swal-container',
+                title: 'swal-title',
+                content: 'swal-content'
+            },
+                buttonsStyling: false,
+                showCloseButton: true,
+                background: '#964734', 
+                color: '#AFDDE5' 
+            });
+        }
+    </script>
+</body>
+
+</html>

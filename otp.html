@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Validation Prototype</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 20px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border 0.3s;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border: 1px solid #7066df;
+        }
+
+        #mobile-input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 70%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        #mobile-input:focus {
+            outline: none;
+            border: 1px solid #7066df;
+        }
+
+        button {
+            background-color: #7066df;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        button:hover {
+            background-color: #1e6092;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OTP Validation Prototype</h1>
+        <form id="mobile-form">
+            <label for="mobile-input">Enter mobile number:</label><br>
+            <input type="tel" id="mobile-input" placeholder="Mobile number" maxlength="10" required>
+            <br><br>
+            <button type="button" id="send-button" onclick="sendOTP()">Send OTP</button>
+        </form>
+
+        <form id="otp-form" style="display: none;">
+            <p>Enter the code:</p>
+            <div class="otp-container">
+                <input type="number" class="otp-input" maxlength="1" />
+                <input type="number" class="otp-input" maxlength="1" />
+                <input type="number" class="otp-input" maxlength="1" />
+                <input type="number" class="otp-input" maxlength="1" />
+                <input type="number" class="otp-input" maxlength="1" />
+            </div>
+            <br><br>
+            <button type="button" onclick="verifyCode()">Verify OTP</button>
+            <br><br>
+            <button type="button" id="resend-button" onclick="resendOTP()">Resend OTP</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <script>
+        const otpInputs = document.querySelectorAll(".otp-input");
+        let codeSent = null;
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener("keyup", (event) => {
+                const currentInput = event.target;
+                if (currentInput.value) {
+                    if (index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                } else if (event.key === "Backspace" && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        function sendOTP() {
+            const mobileNumber = document.getElementById("mobile-input").value.trim();
+            if (/^\d{10}$/.test(mobileNumber)) {
+                codeSent = Math.floor(Math.random() * 90000) + 10000;
+                Swal.fire({
+                    icon: "success",
+                    title: `OTP sent successfully to ${mobileNumber}`,
+                    text: `Your 5-digit code is ${codeSent}`,
+                });
+                document.getElementById("otp-form").style.display = "block";
+                document.getElementById("send-button").disabled = true;
+                document.getElementById("send-button").style.backgroundColor = "#1e6092";
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid mobile number",
+                    text: "Please enter a valid 10-digit mobile number",
+                });
+            }
+        }
+
+        function verifyCode() {
+            const codeInput = Array.from(otpInputs).map(input => input.value.trim()).join("");
+            if (codeInput === codeSent.toString()) {
+                document.getElementById("message").innerHTML = `<div style="color: #a4dd85">Code validated successfully.</div>`;
+                Swal.fire({
+                    icon: "success",
+                    title: "Code validated successfully!",
+                    text: `You entered the correct OTP`,
+                }).then(() => {
+                    location.reload(); // Reload the page after successful validation
+                });
+            } else {
+                document.getElementById("message").innerHTML = `<div style="color: #f27475">Invalid code! Please try again.</div>`;
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid OTP",
+                    text: "Please enter the correct OTP",
+                });
+            }
+            otpInputs.forEach(input => input.value = "");
+        }
+
+        function resendOTP() {
+            let secondsLeft = 10;
+            const button = document.getElementById("resend-button");
+            button.disabled = true;
+            button.style.backgroundColor = "#1e6092";
+            codeSent = Math.floor(Math.random() * 90000) + 10000;
+
+            Swal.fire({
+                icon: "info",
+                title: "OTP Resent",
+                text: `Your 5-digit code is ${codeSent}`,
+            });
+
+            const timer = setInterval(() => {
+                if (secondsLeft > 0) {
+                    button.innerText = `Resend OTP (${secondsLeft--}s)`;
+                } else {
+                    clearInterval(timer);
+                    button.innerText = "Resend OTP";
+                    button.disabled = false;
+                    button.style.backgroundColor = "#7066df";
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

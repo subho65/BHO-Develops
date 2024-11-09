@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 10px; /* Reduced padding */
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 24px; /* Slightly smaller */
+    margin-bottom: 10px; /* Reduced margin */
+}
+
+form {
+    background-color: #ffffff;
+    padding: 15px; /* Reduced padding */
+    border-radius: 6px; /* Slightly smaller border-radius */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08); /* Slightly less shadow */
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+label {
+    font-weight: bold;
+    font-size: 14px;
+    color: 495057;
+    display: block;
+    margin-bottom: 5px;/* Slightly smaller font */
+}
+
+input, select, textarea {
+    width: 95%;
+    padding: 8px; /* Reduced padding */
+    margin: 4px 0 10px 0; /* Reduced margins */
+    border-radius: 4px;
+    font-size: 14px; /* Slightly smaller font */
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    color: #495057;
+    transition: border-color 0.3s ease;
+    
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+h2 {
+    margin-top: 30px;
+    color: #2c3e50;
+    font-size: 18px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+#resume {
+    display: none;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 15px auto;
+    position: relative;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #343a40;
+}
+
+#resume h3 {
+    margin-bottom: 5px;
+    font-size: 16px; /* Slightly smaller font */
+    color: #2c3e50;
+    border-bottom: 1px solid #ced4da;
+    text-align: left;
+}
+
+#resume h2 {
+  margin-bottom: 5px;
+    font-size: 25px; /* Slightly smaller font */
+    color: #2c3e50;
+    border-bottom: 1px solid #ced4da;
+    text-align: left;
+}   
+#resume p {
+    margin: 2px 0; /* Reduced margin */
+    
+}
+
+#resume img {
+    position: absolute;
+    max-width: 100px; /* Reduced image size */
+    max-height: 120px; /* Reduced image size */
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)
+}
+
+#resume img.top-right {
+    top: 30px;
+    right: 30px;
+}
+
+#image-preview {
+    max-width: 100%;
+    max-height: 150px;
+    margin-bottom: 15px;
+    display: none;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.info {
+    text-align: left;
+}
+
+.info strong {
+    display: inline-block;
+    width: 130px; /* Reduced width */
+    color: #495057;
+}
+
+.info p {
+    margin: 3px 0; /* Reduced margin */
+}
+
+.section {
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+button#downloadBtn {
+    margin-top: 20px;
+    background-color: #28a745;
+}
+
+button#downloadBtn:hover {
+    background-color: #218838;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Resume Builder</h1>
+    
+    <form id="resume-form">
+      <label for="imageUpload">Upload Image:</label>
+        <input type="file" id="imageUpload" accept="image/png, image/jpeg, image/jpg" required><br><br>
+        <img id="image-preview">
+
+        <!-- Personal Information Fields -->
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName"  required><br><br>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address"  required><br><br>
+
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required ><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email"  required><br><br>
+        
+        <label for="objective">Career Objective:</label><br>
+        <textarea id="objective" name="objective"  required></textarea><br><br>
+        
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required required><br><br>
+
+        <label for="age">Age:</label>
+        <input type="text" id="age" name="age" readonly><br><br>
+
+        <label for="civilStatus">Civil Status:</label>
+        <select id="civilStatus" name="civilStatus"  >
+            <option value="single">Single</option>
+            <option value="married">Married</option>
+            <option value="divorced">Divorced</option>
+        </select><br><br>
+
+        <label for="religion">Religion:</label>
+        <select id="religion" name="religion"  >
+            <option value="buddhism">Buddhism</option>
+            <option value="islam">Islam</option>
+            <option value="christianity">Christianity</option>
+            <option value="hinduism">Hinduism</option>
+            <option value="judaism">Judaism</option>
+            <option value="jainism">Jainism</option>
+            <option value="sikhism">Sikhism</option>
+            <option value="taoism">Taoism</option>
+        </select><br><br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender"  >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+        </select><br><br>
+
+      
+        <!-- Secondary Education Section -->
+        <h2>Secondary Education</h2>
+        
+        <label for="secSchoolName">Name of School:</label>
+        <input type="text" id="secSchoolName" name="secSchoolName"  required><br><br>
+
+        <label for="secYear">Year:</label>
+        <input type="text" id="secYear" name="secYear"  required><br><br>
+
+        <label for="secMarks">Marks Obtained:</label>
+        <input type="text" id="secMarks" name="secMarks" required ><br><br>
+
+        <label for="secPercentage">Percentage:</label>
+        <input type="text" id="secPercentage" name="secPercentage" required ><br><br>
+
+        <label for="secGrade">Grade:</label>
+        <input type="text" id="secGrade" name="secGrade" required ><br><br>
+
+        <!-- Higher Secondary Education Section -->
+        <h2>Higher Secondary Education</h2>
+        
+        <label for="hsecSchoolName">Name of School:</label>
+        <input type="text" id="hsecSchoolName" name="hsecSchoolName" required ><br><br>
+
+        <label for="hsecYear">Year:</label>
+        <input type="text" id="hsecYear" name="hsecYear" required ><br><br>
+
+        <label for="hsecMarks">Marks Obtained:</label>
+        <input type="text" id="hsecMarks" name="hsecMarks" required ><br><br>
+
+        <label for="hsecPercentage">Percentage:</label>
+        <input type="text" id="hsecPercentage" name="hsecPercentage" required ><br><br>
+
+        <label for="hsecGrade">Grade:</label>
+        <input type="text" id="hsecGrade" name="hsecGrade" required  ><br><br>
+
+        <label for="hsecStream">Stream:</label>
+        <input type="text" id="hsecStream" name="hsecStream" required ><br><br>
+
+        <!-- College Education Section -->
+        <h2>College Education</h2>
+        
+        <label for="collegeName">Name of College:</label>
+        <input type="text" id="collegeName" name="collegeName" required  ><br><br>
+
+        <label for="collegeYear">Year:</label>
+        <input type="text" id="collegeYear" name="collegeYear" required ><br><br>
+
+        <label for="collegeMarks">Marks Obtained:</label>
+        <input type="text" id="collegeMarks" name="collegeMarks"  ><br><br>
+
+        <label for="collegePercentage">Percentage:</label>
+        <input type="text" id="collegePercentage" name="collegePercentage"  ><br><br>
+
+        <label for="collegeGrade">Grade:</label>
+        <input type="text" id="collegeGrade" name="collegeGrade"  ><br><br>
+
+        <label for="collegeSubject">Subject:</label>
+        <input type="text" id="collegeSubject" name="collegeSubject"  ><br><br>
+
+        <label for="workExperience">Work Experience:</label><br>
+        <textarea id="workExperience" name="workExperience"  ></textarea><br><br>
+
+        <label for="skills">Skills:</label><br>
+        <textarea id="skills" name="skills" required></textarea><br><br>
+
+        <label for="hobbies">Hobbies:</label><br>
+        <textarea id="hobbies" name="hobbies"  required></textarea><br><br>
+
+        <button type="submit">Generate Resume</button>
+    </form>
+
+    <div id="resume">
+        <h2 id="resFullName"></h2>
+        <img id="resImage" class="top-right">
+        <div class="section info">
+            <p><strong>Address:</strong> <span id="resAddress"></span></p>
+            <p><strong>Phone:</strong> <span id="resPhone"></span></p>
+            <p><strong>Email:</strong> <span id="resEmail"></span></p>
+            <p><strong>Date of Birth:</strong> <span id="resDOB"></span></p>
+            <p><strong>Age:</strong> <span id="resAge"></span></p>
+            <p><strong>Civil Status:</strong> <span id="resCivilStatus"></span></p>
+            <p><strong>Religion:</strong> <span id="resReligion"></span></p>
+            <p><strong>Gender:</strong> <span id="resGender"></span></p>
+        </div>
+        
+        <div class="section">
+            <h3>Career Objective</h3>
+            <p id="resObjective"></p>
+        </div>
+        
+        <div class="section">
+            <h3>Secondary Education</h3>
+            <p><strong>School:</strong> <span id="resSecSchoolName"></span></p>
+            <p><strong>Year:</strong> <span id="resSecYear"></span></p>
+            <p><strong>Marks Obtained:</strong> <span id="resSecMarks"></span></p>
+            <p><strong>Percentage:</strong> <span id="resSecPercentage"></span></p>
+            <p><strong>Grade:</strong> <span id="resSecGrade"></span></p>
+        </div>
+        
+        <div class="section">
+            <h3>Higher Secondary Education</h3>
+            <p><strong>School:</strong> <span id="resHSecSchoolName"></span></p>
+            <p><strong>Year:</strong> <span id="resHSecYear"></span></p>
+            <p><strong>Marks Obtained:</strong> <span id="resHSecMarks"></span></p>
+            <p><strong>Percentage:</strong> <span id="resHSecPercentage"></span></p>
+            <p><strong>Grade:</strong> <span id="resHSecGrade"></span></p>
+            <p><strong>Stream:</strong> <span id="resHSecStream"></span></p>
+        </div>
+        
+        <div class="section">
+            <h3>College Education</h3>
+            <p><strong>College:</strong> <span id="resCollegeName"></span></p>
+            <p><strong>Year:</strong> <span id="resCollegeYear"></span></p>
+            <p><strong>Marks Obtained:</strong> <span id="resCollegeMarks"></span></p>
+            <p><strong>Percentage:</strong> <span id="resCollegePercentage"></span></p>
+            <p><strong>Grade:</strong> <span id="resCollegeGrade"></span></p>
+            <p><strong>Subject:</strong> <span id="resCollegeSubject"></span></p>
+        </div>
+        
+        <div class="section">
+            <h3>Work Experience</h3>
+            <p id="resWorkExperience"></p>
+        </div>
+        
+        <div class="section">
+            <h3>Skills</h3>
+            <p id="resSkills"></p>
+        </div>
+        
+        <div class="section">
+            <h3>Hobbies</h3>
+            <p id="resHobbies"></p>
+        </div>
+    </div>
+        <button id="downloadBtn">Download Resume as PDF</button>
+
+    
+
+    <script>
+        document.getElementById('resume-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            document.getElementById('resFullName').textContent = document.getElementById('fullName').value;
+            document.getElementById('resAddress').textContent = document.getElementById('address').value;
+            document.getElementById('resPhone').textContent = document.getElementById('phone').value;
+            document.getElementById('resEmail').textContent = document.getElementById('email').value;
+            document.getElementById('resDOB').textContent = document.getElementById('dob').value;
+            document.getElementById('resAge').textContent = document.getElementById('age').value;
+            document.getElementById('resCivilStatus').textContent = document.getElementById('civilStatus').value;
+            document.getElementById('resReligion').textContent = document.getElementById('religion').value;
+            document.getElementById('resGender').textContent = document.getElementById('gender').value;
+            document.getElementById('resObjective').textContent = document.getElementById('objective').value;
+
+            document.getElementById('resSecSchoolName').textContent = document.getElementById('secSchoolName').value;
+            document.getElementById('resSecYear').textContent = document.getElementById('secYear').value;
+            document.getElementById('resSecMarks').textContent = document.getElementById('secMarks').value;
+            document.getElementById('resSecPercentage').textContent = document.getElementById('secPercentage').value;
+            document.getElementById('resSecGrade').textContent = document.getElementById('secGrade').value;
+
+            document.getElementById('resHSecSchoolName').textContent = document.getElementById('hsecSchoolName').value;
+            document.getElementById('resHSecYear').textContent = document.getElementById('hsecYear').value;
+            document.getElementById('resHSecMarks').textContent = document.getElementById('hsecMarks').value;
+            document.getElementById('resHSecPercentage').textContent = document.getElementById('hsecPercentage').value;
+            document.getElementById('resHSecGrade').textContent = document.getElementById('hsecGrade').value;
+            document.getElementById('resHSecStream').textContent = document.getElementById('hsecStream').value;
+
+            document.getElementById('resCollegeName').textContent = document.getElementById('collegeName').value;
+            document.getElementById('resCollegeYear').textContent = document.getElementById('collegeYear').value;
+            document.getElementById('resCollegeMarks').textContent = document.getElementById('collegeMarks').value;
+            document.getElementById('resCollegePercentage').textContent = document.getElementById('collegePercentage').value;
+            document.getElementById('resCollegeGrade').textContent = document.getElementById('collegeGrade').value;
+            document.getElementById('resCollegeSubject').textContent = document.getElementById('collegeSubject').value;
+
+            document.getElementById('resWorkExperience').textContent = document.getElementById('workExperience').value;
+            document.getElementById('resSkills').textContent = document.getElementById('skills').value;
+            document.getElementById('resHobbies').textContent = document.getElementById('hobbies').value;
+
+            var imageFile = document.getElementById('imageUpload').files[0];
+            if (imageFile) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('resImage').src = e.target.result;
+                    document.getElementById('resImage').style.display = 'block';
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                document.getElementById('resImage').style.display = 'none';
+            }
+
+            document.getElementById('resume').style.display = 'block';
+        });
+
+        document.getElementById('dob').addEventListener('input', function() {
+            var dob = new Date(this.value);
+            var diff_ms = Date.now() - dob.getTime();
+            var age_dt = new Date(diff_ms);
+            var age = Math.abs(age_dt.getUTCFullYear() - 1970);
+            document.getElementById('age').value = age;
+        });
+        
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            var element = document.getElementById('resume');
+            
+            var opt = {
+                margin:       5,
+                filename:     'resume.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'A4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save();
+        });
+        
+        
+    </script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+</body>
+</html>

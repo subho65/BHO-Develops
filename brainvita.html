@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Font Awesome 4.7.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainvita Game</title>
+    <style>
+        /* Existing Styles */
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://i.ibb.co/RzKgC60/IMG-20241004-223440.jpg');
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #toolbar {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        #toolbar button {
+            background: none;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #toolbar button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #outer-container {
+            position: relative;
+            width: 90vmin;
+            max-width: 500px;
+            height: 90vmin;
+            max-height: 500px;
+            background-image: url('https://i.ibb.co/bN9MxVN/Picsart-24-10-05-09-26-11-056.png');
+            background-size: cover;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 1),
+                inset -2px -2px 5px rgba(255, 255, 255, 1),
+                0 4px 10px rgba(0, 0, 0, 0.6),
+                0 6px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #inner-container {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            border-radius: 50%;
+            transform: translate(0%, 0%);
+        }
+
+        .cell {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+            background-image: url('https://i.ibb.co/bN9MxVN/Picsart-24-10-05-09-26-11-056.png');
+            background-size: cover;
+            position: relative;
+        }
+
+        .cell.selected {
+            box-shadow: 0 0 10px 5px yellow;
+        }
+
+        .peg {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background-image: url('https://i.ibb.co/Q8YXgcd/Picsart-24-10-05-09-37-34-574.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .peg:hover {
+            transform: scale(1.1);
+        }
+
+        .empty {
+            background-image: url('https://i.ibb.co/bN9MxVN/Picsart-24-10-05-09-26-11-056.png');
+            background-size: cover;
+            box-shadow: inset 1px 10px 10px rgba(0, 0, 0, 1),
+                2px 2px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .disabled {
+            visibility: hidden;
+        }
+
+        /* Modal Styles */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            z-index: 1001;
+        }
+
+        #modal-content {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: left;
+            position: relative;
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        /* Updated Timer Styles */
+        #timer {
+            font-size: 25px;
+            color: white;
+            margin-top: 25px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace; /* Monospaced font for better alignment */
+        }
+
+        /* Board Representation Styles */
+        .final-board {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        /* New Styles for Final Board */
+        .final-outer-container {
+            position: relative;
+            width: 50vmin;
+            max-width: 150px;
+            height: 50vmin;
+            max-height: 150px;
+            background-image: url('https://i.ibb.co/bN9MxVN/Picsart-24-10-05-09-26-11-056.png');
+            background-size: cover;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 1),
+                inset -2px -2px 5px rgba(255, 255, 255, 1),
+                0 4px 10px rgba(0, 0, 0, 0.6),
+                0 6px 10px rgba(0, 0, 0, 0.5);
+            margin: 0 auto;
+        }
+
+        .final-inner-container {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            border-radius: 50%;
+            transform: translate(0%, 0%);
+        }
+
+        .final-cell {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+            background-image: url('https://i.ibb.co/bN9MxVN/Picsart-24-10-05-09-26-11-056.png');
+            background-size: cover;
+            position: relative;
+        }
+
+        .final-peg {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background-image: url('https://i.ibb.co/Q8YXgcd/Picsart-24-10-05-09-37-34-574.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.8);
+            transition: transform 0.2s ease;
+        }
+
+        .final-empty {
+            background-image: url('https://i.ibb.co/bN9MxVN/Picsart-24-10-05-09-26-11-056.png');
+            background-size: cover;
+            box-shadow: inset 1px 10px 10px rgba(0, 0, 0, 1),
+                2px 2px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .final-disabled {
+            visibility: hidden;
+        }
+       
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            #toolbar button {
+                font-size: 16px;
+                padding: 8px 10px;
+            }
+
+            #timer {
+                font-size: 25px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="toolbar">
+        <button id="help-button" title="Help"><i class="fa fa-question" aria-hidden="true"></i></button>
+        <button id="play-button" title="Play"><i class="fa fa-play" aria-hidden="true"></i></button>
+        <button id="pause-button" title="Pause"><i class="fa fa-pause" aria-hidden="true"></i></button>
+        <button id="undo-button" title="Undo"><i class="fa fa-undo" aria-hidden="true"></i></button>
+        <button id="redo-button" title="Redo"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+        <button id="reset-button" title="Reset"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+    </div>
+
+    <div id="outer-container">
+        <div id="inner-container"></div>
+    </div>
+
+    <div id="timer">Time: 00:00:00</div>
+
+    <div id="modal">
+        <div id="modal-content">
+            <span id="close-modal">X</span>
+            <img width="320px" src="https://i.ibb.co/QkxQ3wb/20241005-161657.png" alt="Help Image">
+            <h2>Rules of Brain Vita:</h2>
+
+            <ul>
+                <li>Remove as many marbles as possible, leaving one remaining.</li>
+                <li>Jump over an adjacent marble into an empty hole directly opposite; remove the jumped marble.</li>
+                <li>Only jump one marble at a time, landing in a straight line.</li>
+                <li>The game ends when no moves are left.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const gameContainer = document.getElementById('inner-container');
+const helpButton = document.getElementById('help-button');
+const modal = document.getElementById('modal');
+const closeModal = document.getElementById('close-modal');
+const playButton = document.getElementById('play-button');
+const pauseButton = document.getElementById('pause-button');
+const undoButton = document.getElementById('undo-button');
+const redoButton = document.getElementById('redo-button');
+const resetButton = document.getElementById('reset-button');
+const timerDisplay = document.getElementById('timer');
+let timerInterval;
+let timerStarted = false;
+let timeElapsed = 0;
+
+// History stack for undo and redo
+let history = [];
+let redoStack = [];
+
+const moveSound = new Audio('/tap-sound.mp3');
+moveSound.volume = 0.5; // Optional: Adjust the volume (0.0 to 1.0)
+
+// 7x7 board (1 = peg, 0 = empty, -1 = disabled)
+const initialBoard = [
+    [-1, -1, 1, 1, 1, -1, -1],
+    [-1, -1, 1, 1, 1, -1, -1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 0, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [-1, -1, 1, 1, 1, -1, -1],
+    [-1, -1, 1, 1, 1, -1, -1]
+];
+
+let board = JSON.parse(JSON.stringify(initialBoard));
+
+function createBoard(container = gameContainer, boardState = board) {
+    container.innerHTML = '';
+    for (let i = 0; i < boardState.length; i++) {
+        for (let j = 0; j < boardState[i].length; j++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            if (boardState[i][j] === 1) {
+                const peg = document.createElement('div');
+                peg.classList.add('peg');
+                peg.onclick = () => handlePegClick(i, j);
+                cell.appendChild(peg);
+            } else if (boardState[i][j] === 0) {
+                cell.classList.add('empty');
+                cell.onclick = () => handleEmptyClick(i, j);
+            } else {
+                cell.classList.add('disabled');
+            }
+            container.appendChild(cell);
+        }
+    }
+}
+
+function isValidMove(startRow, startCol, endRow, endCol) {
+    const rowDiff = endRow - startRow;
+    const colDiff = endCol - startCol;
+
+    // Check if the move is two spaces horizontally or vertically
+    if ((Math.abs(rowDiff) === 2 && colDiff === 0) ||
+        (Math.abs(colDiff) === 2 && rowDiff === 0)) {
+        const middleRow = startRow + rowDiff / 2;
+        const middleCol = startCol + colDiff / 2;
+
+        // Ensure the middle position has a peg to jump over
+        return board[middleRow][middleCol] === 1 && board[endRow][endCol] === 0;
+    }
+    return false;
+}
+
+function movePeg(startRow, startCol, endRow, endCol) {
+    board[endRow][endCol] = 1; // Place peg in the destination
+    board[startRow][startCol] = 0; // Remove peg from start
+    board[startRow + (endRow - startRow) / 2][startCol + (endCol - startCol) / 2] = 0; // Remove jumped peg
+    createBoard();
+    playMoveSound();// Update the visual board
+    checkGameOver();
+}
+
+
+function playMoveSound() {
+    moveSound.currentTime = 0; // Rewind to the start
+    moveSound.play();
+}
+
+let firstClick = null;
+
+function handlePegClick(row, col) {
+    if (!timerStarted) {
+        startTimer(); // Start the timer on the first move
+        timerStarted = true;
+    }
+
+    if (firstClick === null) {
+        // Select the peg
+        if (board[row][col] === 1) {
+            firstClick = { row, col };
+            highlightSelected(row, col);
+        }
+    } else {
+        // Attempt to move to the clicked peg's position (invalid)
+        if (row === firstClick.row && col === firstClick.col) {
+            // Deselect if the same peg is clicked again
+            firstClick = null;
+            removeHighlights();
+        } else {
+            // Attempting to select another peg without moving
+            removeHighlights();
+            firstClick = { row, col };
+            highlightSelected(row, col);
+        }
+    }
+}
+
+function handleEmptyClick(row, col) {
+    if (!timerStarted) {
+        startTimer(); // Start the timer on the first move
+        timerStarted = true;
+    }
+
+    if (firstClick !== null) {
+        if (isValidMove(firstClick.row, firstClick.col, row, col)) {
+            saveState(); // Save state before moving
+            movePeg(firstClick.row, firstClick.col, row, col); // Move peg
+        }
+        firstClick = null; // Reset first click
+        removeHighlights();
+    }
+}
+
+function highlightSelected(row, col) {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach((cell, index) => {
+        const r = Math.floor(index / 7);
+        const c = index % 7;
+        if (r === row && c === col) {
+            cell.classList.add('selected');
+        }
+    });
+}
+
+function removeHighlights() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => cell.classList.remove('selected'));
+}
+
+function saveState() {
+    history.push(JSON.parse(JSON.stringify(board)));
+    redoStack = []; // Clear redo stack on a new action
+}
+
+function undo() {
+    if (history.length > 0) {
+        redoStack.push(JSON.parse(JSON.stringify(board)));
+        board = history.pop();
+        createBoard();
+    } else {
+        Swal.fire({
+            icon: 'info',
+            title: 'Nothing to Undo',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+}
+
+function redo() {
+    if (redoStack.length > 0) {
+        history.push(JSON.parse(JSON.stringify(board)));
+        board = redoStack.pop();
+        createBoard();
+    } else {
+        Swal.fire({
+            icon: 'info',
+            title: 'Nothing to Redo',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+}
+
+// **New Function to Format Time as HH:MM:SS**
+function formatTime(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    // Pad with leading zeros if necessary
+    const formattedHrs = String(hrs).padStart(2, '0');
+    const formattedMins = String(mins).padStart(2, '0');
+    const formattedSecs = String(secs).padStart(2, '0');
+
+    return `${formattedHrs}:${formattedMins}:${formattedSecs}`;
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeElapsed++;
+        timerDisplay.textContent = `Time: ${formatTime(timeElapsed)}`;
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+function resetGame() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This will reset the game and timer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, reset it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            board = JSON.parse(JSON.stringify(initialBoard));
+            history = [];
+            redoStack = [];
+            createBoard();
+            resetTimer();
+            Swal.fire(
+                'Reset!',
+                'The game has been reset.',
+                'success'
+            );
+        }
+    });
+}
+
+function resetTimer() {
+    stopTimer();
+    timerStarted = false;
+    timeElapsed = 0;
+    timerDisplay.textContent = `Time: 00:00:00`;
+}
+
+// **New Function to Calculate Stars**
+function calculateStars(remainingPegs) {
+    if (remainingPegs === 1) return 5;
+    if (remainingPegs === 2) return 4;
+    if (remainingPegs === 3) return 3;
+    if (remainingPegs === 4) return 2;
+    if (remainingPegs === 5) return 1;
+    return 1; // More than 5 pegs
+}
+
+// **New Function to Generate Star Icons**
+function generateStarHTML(starCount) {
+    let starsHTML = '';
+    const totalStars = 5;
+    for (let i = 0; i < totalStars; i++) {
+        if (i < starCount) {
+            starsHTML += '<i class="fa fa-star" style="color: gold; font-size: 40px;"></i> ';
+        } else {
+            starsHTML += '<i class="fa fa-star-o" style="color: gold; font-size: 40px;"></i> ';
+        }
+    }
+    return starsHTML;
+}
+
+// **Updated Function to Generate Final Board HTML**
+function generateFinalBoardHTML() {
+    const finalOuter = document.createElement('div');
+    finalOuter.classList.add('final-outer-container');
+
+    const finalInner = document.createElement('div');
+    finalInner.classList.add('final-inner-container');
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            const finalCell = document.createElement('div');
+            finalCell.classList.add('final-cell');
+
+            if (board[i][j] === 1) {
+                const finalPeg = document.createElement('div');
+                finalPeg.classList.add('final-peg');
+                finalCell.appendChild(finalPeg);
+            } else if (board[i][j] === 0) {
+                finalCell.classList.add('final-empty');
+            } else {
+                finalCell.classList.add('final-disabled');
+            }
+
+            finalInner.appendChild(finalCell);
+        }
+    }
+
+    finalOuter.appendChild(finalInner);
+    return finalOuter.outerHTML;
+}
+
+function checkGameOver() {
+    let possibleMoves = false;
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            if (board[i][j] === 1) {
+                // Check all four directions
+                const directions = [
+                    { row: -2, col: 0 },
+                    { row: 2, col: 0 },
+                    { row: 0, col: -2 },
+                    { row: 0, col: 2 }
+                ];
+                for (let dir of directions) {
+                    const newRow = i + dir.row;
+                    const newCol = j + dir.col;
+                    if (newRow >= 0 && newRow < 7 && newCol >= 0 && newCol < 7) {
+                        if (isValidMove(i, j, newRow, newCol)) {
+                            possibleMoves = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (possibleMoves) break;
+        }
+        if (possibleMoves) break;
+    }
+
+    if (!possibleMoves) {
+        stopTimer();
+        const remainingPegs = board.flat().filter(cell => cell === 1).length;
+        const stars = calculateStars(remainingPegs);
+        const starsHTML = generateStarHTML(stars);
+        const finalBoardHTML = generateFinalBoardHTML();
+
+        Swal.fire({
+            title: 'Game Over!',
+            html: `
+                <div style="text-align: center;">
+                    ${finalBoardHTML} <br />
+                    <div style="margin: 10px 0; " >${starsHTML}</div>
+                    <p style="font-size: 25px;"><i class="fa fa-trophy" aria-hidden="true">
+                        
+                    </i> Time: ${formatTime(timeElapsed)}</p>
+                    <button id="restart-button" class="swal2-confirm swal2-styled" style="margin-top: 20px;">Restart</button>
+                </div>
+            `,
+            showConfirmButton: false,
+            didOpen: () => {
+                const restartButton = Swal.getPopup().querySelector('#restart-button');
+                restartButton.onclick = () => {
+                    Swal.close();
+                    resetGame();
+                };
+            }
+        });
+    }
+}
+
+helpButton.onclick = () => {
+    modal.style.display = 'flex';
+};
+
+closeModal.onclick = () => {
+    modal.style.display = 'none';
+};
+
+playButton.onclick = () => {
+    if (!timerStarted) {
+        startTimer();
+        timerStarted = true;
+    }
+};
+
+pauseButton.onclick = () => {
+    if (timerStarted) {
+        stopTimer();
+        timerStarted = false;
+    }
+};
+
+undoButton.onclick = undo;
+redoButton.onclick = redo;
+resetButton.onclick = resetGame;
+
+// Initialize the game board
+createBoard();
+
+    </script>
+</body>
+</html>

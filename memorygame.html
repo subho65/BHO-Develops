@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <title>Memory Game for Kids</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap");
+      /* Main styles */
+      body,
+      html {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Comic Sans MS", sans-serif;
+        background: linear-gradient(135deg, #f6d365, #fda085);
+      }
+
+      .container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #ffefd5;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        max-width: 80vw;
+        max-height: 90vh;
+        width: 320px;
+      }
+
+      #difficulty-selection {
+        display: flex;
+      }
+
+      #game-board-container {
+        display: none;
+      }
+
+      .header {
+        font-size: 4rem;
+        font-weight: bold;
+
+        margin-bottom: 20px;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        color: #ff6347;
+      }
+
+      .button {
+        padding: 8px 15px;
+        font-size: 1rem;
+        margin: 5px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background-color: #ffb347;
+        color: white;
+        transition: all 0.3s;
+        position: relative;
+        /* For funky effect */
+        overflow: hidden;
+        font-size: 18px;
+        /* Increased font size */
+        font-weight: bold;
+        /* Bold text for emphasis */
+        text-transform: uppercase;
+      }
+
+      .button::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        transition: all 0.5s;
+        transform: translate(-50%, -50%) scale(0);
+        z-index: 0;
+      }
+
+      .button:hover::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .button:hover {
+        background-color: #ff8c00;
+      }
+
+      .button:hover {
+        background-color: #ff8c00;
+      }
+
+      .difficulty-button {
+        width: 150px;
+        /* Fixed width */
+        height: 50px;
+        /* Fixed height */
+        background: linear-gradient(45deg, #ff6f61, #6a5b8a);
+        /* Default gradient */
+        color: white;
+        /* Text color */
+        border: none;
+        /* Remove default border */
+        border-radius: 25px;
+        /* Rounded corners */
+        text-align: center;
+        /* Center text */
+        font-size: 18px;
+        /* Increased font size */
+        font-weight: bold;
+        /* Bold text for emphasis */
+        text-transform: uppercase;
+        /* Uppercase letters for style */
+        letter-spacing: 1px;
+        /* Spacing between letters */
+        cursor: pointer;
+        /* Pointer cursor on hover */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        /* Shadow effect */
+        transition: transform 0.3s, background 0.3s;
+        /* Smooth transitions */
+        position: relative;
+        /* Positioning for pseudo-elements */
+        display: flex;
+        /* Use flexbox for alignment */
+        align-items: center;
+        /* Center items vertically */
+        justify-content: center;
+        /* Center items horizontally */
+      }
+
+      /* Different gradients for each difficulty level */
+      .difficulty-button.easy {
+        background: linear-gradient(45deg, #4caf50, #8bc34a);
+        /* Green for Easy */
+      }
+
+      .difficulty-button.medium {
+        background: linear-gradient(45deg, #ff9800, #ffc107);
+        /* Orange for Medium */
+      }
+
+      .difficulty-button.hard {
+        background: linear-gradient(45deg, #f44336, #e91e63);
+        /* Red for Hard */
+      }
+
+      .difficulty-button:hover {
+        transform: translateY(-5px);
+        /* Slight lift effect on hover */
+      }
+
+      .difficulty-button::after {
+        content: "";
+        /* Empty content for the pseudo-element */
+        position: absolute;
+        /* Positioning the pseudo-element */
+        top: 50%;
+        /* Center vertically */
+        left: 50%;
+        /* Center horizontally */
+        width: 300%;
+        /* Expand beyond the button */
+        height: 300%;
+        /* Expand beyond the button */
+        background: rgba(255, 255, 255, 0.1);
+        /* Semi-transparent effect */
+        border-radius: 50%;
+        /* Circular shape */
+        transition: transform 0.3s;
+        /* Smooth transitions */
+        transform: translate(-50%, -50%) scale(0);
+        /* Start scaled down */
+      }
+
+      .difficulty-button:hover::after {
+        transform: translate(-50%, -50%) scale(1);
+        /* Scale up on hover */
+      }
+
+      .back-button {
+        align-self: flex-start;
+      }
+
+      .back-button:hover {
+        background-color: #ff4c4c;
+      }
+
+      /* Game board styling */
+      .game-board {
+        display: grid;
+        gap: 6px;
+        margin-top: 20px;
+      }
+
+      /* Card styling with 3D flip */
+      .card {
+        position: relative;
+        width: 70px;
+        height: 70px;
+        perspective: 1000px;
+      }
+
+      .card-inner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateX(180deg);
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+      }
+
+      .card-front {
+        background-color: #ff7f50;
+        color: white;
+        font-size: 2rem;
+      }
+
+      .card-back {
+        background-color: #ffefd5;
+        color: #2c3e50;
+        transform: rotateY(180deg);
+      }
+
+      .hidden .card-front {
+        display: none;
+      }
+      img {
+        -webkit-filter: drop-shadow(2px 3px 1px #222);
+      }
+      .score-timer {
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+        margin-bottom: 10px;
+        font-size: 20px;
+        /* Increased font size */
+        font-weight: bold;
+        /* Bold text for emphasis */
+        text-transform: uppercase;
+        /* Uppercase letters for style */
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Difficulty Selection Screen -->
+    <div id="difficulty-selection" class="container">
+      <div class="header">LEVEL</div>
+      <button class="button difficulty-button easy" onclick="startGame('easy')">
+        Easy
+      </button>
+      <button
+        class="button difficulty-button medium"
+        onclick="startGame('medium')"
+      >
+        Medium
+      </button>
+      <button class="button difficulty-button hard" onclick="startGame('hard')">
+        Hard
+      </button>
+    </div>
+
+    <!-- Game Board Screen -->
+    <div id="game-board-container" class="container">
+      <div class="back-button" onclick="goBack()">
+        <img
+          src="https://i.ibb.co/805HLM6/20241028-223511.png"
+          alt="20241028-222413"
+          border="0"
+          width="80px"
+        />
+      </div>
+
+      <div>
+        <button id="start-btn" class="button" onclick="beginGame()">
+          Start
+        </button>
+        <button class="button" onclick="resetGame()">Reset</button>
+      </div>
+      <div id="game-board" class="game-board"></div>
+      <br />
+      <div class="score-timer">
+        <div id="score">Score: 0</div>
+        <div id="timer">Time: 00:00:00</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Add SweetAlert Library -->
+
+    <script>
+      let gameData = {
+        easy: { pairs: 8, rows: 4, cols: 4 },
+        medium: { pairs: 10, rows: 5, cols: 4 },
+        hard: { pairs: 12, rows: 6, cols: 4 },
+      };
+
+      let selectedDifficulty,
+        score,
+        gameBoard,
+        flippedCards,
+        timer,
+        timeElapsed,
+        timerInterval;
+      let gameStarted = false;
+
+      function startGame(difficulty) {
+        selectedDifficulty = difficulty;
+        score = 0;
+        gameStarted = false;
+        clearInterval(timerInterval);
+        document.getElementById("timer").innerText = `Time: 00:00:00`;
+
+        const config = gameData[difficulty];
+        gameBoard = document.getElementById("game-board");
+        gameBoard.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
+        gameBoard.style.gridTemplateRows = `repeat(${Math.ceil(
+          config.pairs / config.cols
+        )}, 1fr)`;
+        gameBoard.innerHTML = "";
+
+        const emojis = [
+          "🍎",
+          "🍌",
+          "🍇",
+          "🍉",
+          "🍑",
+          "🍒",
+          "🍍",
+          "🥝",
+          "🥭",
+          "🍓",
+          "🍋",
+          "🍊",
+        ];
+        const cards = emojis
+          .slice(0, config.pairs)
+          .concat(emojis.slice(0, config.pairs));
+        cards.sort(() => Math.random() - 0.5);
+
+        flippedCards = [];
+        cards.forEach((emoji, i) => {
+          const card = document.createElement("div");
+          card.className = "card hidden";
+          card.dataset.emoji = emoji;
+          card.dataset.index = i;
+          card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">${emoji}</div>
+          <div class="card-back"></div>
+        </div>
+      `;
+          card.addEventListener("click", flipCard);
+          gameBoard.appendChild(card);
+        });
+
+        document.getElementById("difficulty-selection").style.display = "none";
+        document.getElementById("game-board-container").style.display = "flex";
+        updateScore();
+      }
+
+      function beginGame() {
+        document.querySelectorAll(".card").forEach((card) => {
+          card.classList.remove("hidden");
+        });
+
+        setTimeout(() => {
+          document.querySelectorAll(".card").forEach((card) => {
+            card.classList.add("hidden");
+          });
+          document.getElementById("start-btn").style.display = "none";
+          gameStarted = true;
+          startTimer();
+        }, 2000);
+      }
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeElapsed = 0;
+        timerInterval = setInterval(() => {
+          timeElapsed++;
+
+          // Calculate hours, minutes, and seconds
+          const hours = Math.floor(timeElapsed / 3600)
+            .toString()
+            .padStart(2, "0");
+          const minutes = Math.floor((timeElapsed % 3600) / 60)
+            .toString()
+            .padStart(2, "0");
+          const seconds = (timeElapsed % 60).toString().padStart(2, "0");
+
+          // Display in HH:MM:SS format
+          document.getElementById(
+            "timer"
+          ).innerText = `Time: ${hours}:${minutes}:${seconds}`;
+        }, 1000);
+      }
+
+      function resetGame() {
+        clearInterval(timerInterval);
+        document.getElementById("timer").innerText = `Time: 00:00:00`;
+        document.getElementById("start-btn").style.display = "inline-block";
+        gameStarted = false;
+        startGame(selectedDifficulty);
+      }
+
+      function flipCard(e) {
+        if (!gameStarted) return;
+
+        const card = e.currentTarget;
+        const innerCard = card.querySelector(".card-inner");
+        if (!card.classList.contains("hidden") || flippedCards.length === 2)
+          return;
+
+        innerCard.classList.add("flipped");
+        card.classList.remove("hidden");
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+          checkMatch();
+        }
+      }
+
+      function checkMatch() {
+        const [card1, card2] = flippedCards;
+        if (card1.dataset.emoji === card2.dataset.emoji) {
+          score++;
+          card1.removeEventListener("click", flipCard);
+          card2.removeEventListener("click", flipCard);
+          flippedCards = [];
+          updateScore();
+
+          // Check for game completion
+          if (score === gameData[selectedDifficulty].pairs) {
+            clearInterval(timerInterval); // Stop timer
+            Swal.fire({
+              title:
+                "<strong style=\"font-family: 'Comic Neue', cursive; color: #FF4081;\">Yay! You Did It!</strong>",
+              html: `
+                    <div style="text-align: center; margin: 0; padding: 0;">
+                        <h1 style="color: #FFC107; font-family: 'Comic Neue', cursive; margin: 10px 0;">You completed the game!</h1>
+                        <img src="https://img.icons8.com/color/96/000000/trophy.png" alt="Trophy" style="width: 80px; margin: 10px 0;">
+                    </div>
+                    <div style="font-size: 24px; font-weight: bold; text-transform: uppercase; font-family: 'Comic Neue', cursive; margin: 5px 0;">
+                        Time: <span style="color: #2196F3;">${formatTime(
+                          timeElapsed
+                        )}</span> & Score: <span style="color: #FF5722;">${score}</span>
+                    </div>
+                `,
+              icon: "success",
+              confirmButtonText: '<i class="fas fa-redo"></i> Play Again!',
+              confirmButtonColor: "#FF4081",
+              backdrop: "true",
+            }).then(() => {
+              resetGame(); // Go back to difficulty selection
+            });
+          }
+        } else {
+          setTimeout(() => {
+            card1.querySelector(".card-inner").classList.remove("flipped");
+            card2.querySelector(".card-inner").classList.remove("flipped");
+            card1.classList.add("hidden");
+            card2.classList.add("hidden");
+            flippedCards = [];
+          }, 1000);
+        }
+      }
+
+      function goBack() {
+        document.getElementById("game-board-container").style.display = "none";
+        document.getElementById("difficulty-selection").style.display = "flex";
+        document.getElementById("start-btn").style.display = "inline-block";
+      }
+
+      function updateScore() {
+        document.getElementById("score").innerText = `Score: ${score}`;
+      }
+
+      document.getElementById("difficulty-selection").style.display = "flex";
+
+      function formatTime(seconds) {
+        const hrs = Math.floor(seconds / 3600)
+          .toString()
+          .padStart(2, "0");
+        const mins = Math.floor((seconds % 3600) / 60)
+          .toString()
+          .padStart(2, "0");
+        const secs = (seconds % 60).toString().padStart(2, "0");
+        return `${hrs}:${mins}:${secs}`;
+      }
+    </script>
+  </body>
+</html>

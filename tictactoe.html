@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
+  <style>
+    body {
+      background-color: #ffeb3b;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #f44336;
+      text-shadow: 2px 2px #ff9800;
+      margin-top: 0;
+      font-size: 3em;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100px;
+      margin: 5px auto;
+      justify-content: center;
+    }
+
+    .cell {
+      width: 80px;
+      height: 80px;
+      background-color: #00bcd4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3em;
+      color: #ffffff;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .cell:hover {
+      background-color: #0097a7;
+      transform: scale(1.03);
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+      background-color: #8bc34a;
+      color: #000000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color #0c4704, box-shadow #000000;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #7cb342;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    label {
+      font-size: 18px;
+      color: #4e342e;
+      margin-right: 10px;
+    }
+
+    select {
+      font-size: 18px;
+      padding: 8px;
+      color: #4e342e;
+      border-radius: 5px;
+      border: 1px solid #4e342e;
+      background-color: #ffcc80;
+      cursor: pointer;
+    }
+
+    .container {
+      text-align: center;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div id="board">
+    <div class="cell" onclick="makeMove(0)"></div>
+    <div class="cell" onclick="makeMove(1)"></div>
+    <div class="cell" onclick="makeMove(2)"></div>
+    <div class="cell" onclick="makeMove(3)"></div>
+    <div class="cell" onclick="makeMove(4)"></div>
+    <div class="cell" onclick="makeMove(5)"></div>
+    <div class="cell" onclick="makeMove(6)"></div>
+    <div class="cell" onclick="makeMove(7)"></div>
+    <div class="cell" onclick="makeMove(8)"></div>
+  </div>
+  <div class="container">
+    <label for="difficulty">Difficulty:</label>
+    <select id="difficulty" onchange="resetBoard()">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+      <option value="friend">Play with Friend</option>
+    </select>
+    <br><br>
+    <button onclick="resetBoard()">Reset</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+  <script>
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let isGameOver = false;
+    let isPlayingWithFriend = false;
+
+    function makeMove(index) {
+      if (!isGameOver && board[index] === '') {
+        board[index] = currentPlayer;
+        document.getElementsByClassName('cell')[index].innerText = currentPlayer;
+        checkGameStatus();
+        if (!isGameOver) {
+          currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+          if (currentPlayer === 'O' && !isPlayingWithFriend) {
+            const difficulty = document.getElementById('difficulty').value;
+            if (difficulty === 'easy') makeRandomMove();
+            else if (difficulty === 'medium') makeMediumMove();
+            else if (difficulty === 'hard') makeHardMove();
+          }
+        }
+      }
+    }
+
+    function makeRandomMove() {
+      const availableMoves = board.map((val, i) => val === '' ? i : null).filter(val => val !== null);
+      if (availableMoves.length > 0) {
+        const move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+        board[move] = currentPlayer;
+        document.getElementsByClassName('cell')[move].innerText = currentPlayer;
+        checkGameStatus();
+        currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+      }
+    }
+
+    function makeMediumMove() {
+  // First, check if AI can win in the next move
+  let bestMove = getBestMove('O');
+  if (bestMove !== null) {
+    board[bestMove] = currentPlayer;
+    document.getElementsByClassName('cell')[bestMove].innerText = currentPlayer;
+    checkGameStatus();
+    currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+    return;
+  }
+
+  // If AI can't win, check if it needs to block the opponent from winning
+  bestMove = getBestMove('X');
+  if (bestMove !== null) {
+    board[bestMove] = currentPlayer;
+    document.getElementsByClassName('cell')[bestMove].innerText = currentPlayer;
+    checkGameStatus();
+    currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+    return;
+  }
+
+  // Otherwise, make a random move
+  makeRandomMove();
+}
+
+function getBestMove(player) {
+  const winningCombinations = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
+  ];
+
+  // Iterate through all winning combinations to see if the player can win
+  for (let combo of winningCombinations) {
+    const [a, b, c] = combo;
+
+    // Check if the player occupies two out of three cells in any winning combination
+    if (board[a] === player && board[b] === player && board[c] === '') {
+      return c;
+    }
+    if (board[a] === player && board[c] === player && board[b] === '') {
+      return b;
+    }
+    if (board[b] === player && board[c] === player && board[a] === '') {
+      return a;
+    }
+  }
+
+  // If no winning or blocking move is found, return null
+  return null;
+}
+
+
+    function makeHardMove() {
+      let bestScore = -Infinity;
+      let bestMove;
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === '') {
+          board[i] = currentPlayer;
+          const score = minimax(board, 0, false);
+          board[i] = '';
+          if (score > bestScore) {
+            bestScore = score;
+            bestMove = i;
+          }
+        }
+      }
+      board[bestMove] = currentPlayer;
+      document.getElementsByClassName('cell')[bestMove].innerText = currentPlayer;
+      checkGameStatus();
+      currentPlayer = (currentPlayer === 'X') ? 'O' : 'X';
+    }
+
+    function minimax(board, depth, isMaximizingPlayer) {
+      const scores = { X: -1, O: 1, draw: 0 };
+      const result = checkWinner();
+      if (result !== null) return scores[result];
+      
+      if (isMaximizingPlayer) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < board.length; i++) {
+          if (board[i] === '') {
+            board[i] = 'O';
+            const score = minimax(board, depth + 1, false);
+            board[i] = '';
+            bestScore = Math.max(score, bestScore);
+          }
+        }
+        return bestScore;
+      } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < board.length; i++) {
+          if (board[i] === '') {
+            board[i] = 'X';
+            const score = minimax(board, depth + 1, true);
+            board[i] = '';
+            bestScore = Math.min(score, bestScore);
+          }
+        }
+        return bestScore;
+      }
+    }
+
+    function checkGameStatus() {
+      const result = checkWinner();
+      if (result !== null) {
+        isGameOver = true;
+        Swal.fire({
+          icon: result === 'draw' ? 'info' : 'success',
+          title: result === 'draw' ? "It's a Draw!" : `Player ${result} Wins!`,
+        });
+      } else if (!board.includes('')) {
+        isGameOver = true;
+        Swal.fire({
+          icon: 'info',
+          title: "It's a Draw!",
+        });
+      }
+    }
+
+    function checkWinner() {
+      const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      for (const [a, b, c] of winningCombinations) {
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return board[a];
+        }
+      }
+      return !board.includes('') ? 'draw' : null;
+    }
+
+    function resetBoard() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      isGameOver = false;
+      const cells = document.getElementsByClassName('cell');
+      for (const cell of cells) {
+        cell.innerText = '';
+      }
+      isPlayingWithFriend = document.getElementById('difficulty').value === 'friend';
+    }
+  </script>
+</body>
+</html>

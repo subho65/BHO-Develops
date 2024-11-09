@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Compressor</title>
+  <!-- Include Font Awesome via CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Include SweetAlert2 via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* styles.css */
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    #drop-area {
+      border: 2px dashed #007bff;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+      position: relative;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    #drop-area.highlight {
+      border-color: #0056b3;
+      background-color: #e6f0ff;
+    }
+
+    .my-form {
+      margin: 0;
+    }
+
+    .my-form p {
+      margin: 0 0 10px;
+      color: #555;
+    }
+
+    #fileElem {
+      display: none;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+    }
+
+ 
+
+    #preview-section {
+      margin-bottom: 20px;
+    }
+
+    #preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .preview-item {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 10px;
+      padding: 10px;
+      width: 200px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .preview-item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    /* Styles for Delete Button */
+    .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      color: #ff909c;
+      background: #ffdfe3;
+      border: 1px solid #ff909c;
+      border-radius: 50%;
+      padding: 6px 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 15px;
+    }
+
+    .delete-btn:hover {
+      background: rgba(255, 0, 0, 0.8);
+      color: white;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .button-group button {
+      flex: 1;
+      margin: 0 2px;
+      padding: 5px;
+      font-size: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button-group button.original-btn {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .button-group button.original-btn:hover {
+      background-color: #117a8b;
+    }
+
+    .button-group button.compressed-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .button-group button.compressed-btn:hover {
+      background-color: #1e7e34;
+    }
+
+    .settings {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .setting {
+      flex: 1 1 45%;
+      margin: 10px 0;
+      text-align: left;
+    }
+
+    .setting label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .setting input[type="range"],
+    .setting input[type="number"],
+    .setting select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .dimensions label {
+      margin-top: 10px;
+    }
+
+    #compressBtn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 4px;
+      background-color: #28a745;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #compressBtn:hover {
+      background-color: #1e7e34;
+    }
+
+    #progress {
+      margin-top: 20px;
+      color: #555;
+    }
+
+    #output {
+      margin-top: 30px;
+    }
+
+    #downloadZip {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      background-color: #17a2b8;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    #downloadZip:hover {
+      background-color: #117a8b;
+    }
+
+    #individualDownloads {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .individual-download {
+      margin: 5px;
+    }
+
+    .individual-download a {
+      display: inline-block;
+      padding: 8px 15px;
+      background-color: #6c757d;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .individual-download a:hover {
+      background-color: #5a6268;
+    }
+
+    @media (max-width: 600px) {
+      .settings {
+        flex-direction: column;
+      }
+
+      .setting {
+        flex: 1 1 100%;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .button-group button {
+        margin: 2px 0;
+      }
+    }
+    #preview-section,
+.settings,
+#compressBtn,
+#progress,
+#output {
+  display: none;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Image Compressor</h1>
+
+    <!-- Drag and Drop Area -->
+    <div id="drop-area">
+      <form class="my-form">
+        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="48px" viewBox="0 0 24 24" width="48px" fill="#007bff"><g><rect fill="none" height="24" width="24"/></g><g><path d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M7,9l1.41,1.41L11,7.83V16h2V7.83l2.59,2.58L17,9l-5-5L7,9z"/></g></svg>
+
+        <p>Drag and drop images here or</p>
+        <input type="file" id="fileElem" multiple accept="image/*">
+        <label class="button" for="fileElem">Select Images</label>
+      </form>
+    </div>
+
+    <!-- Preview Section -->
+    <div id="preview-section">
+      <h2>Uploaded Images</h2>
+      <div id="preview-container"></div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings">
+      <div class="setting">
+        <label for="quality">Quality:</label>
+        <input type="range" id="quality" min="10" max="100" value="80">
+        <span id="qualityValue">80</span>%
+      </div>
+      <div class="setting">
+        <label for="resize">Resize:</label>
+        <select id="resize">
+          <option value="none" selected>No Resize</option>
+          <option value="pixels">Pixels</option>
+          <option value="inches">Inches</option>
+          <option value="mm">Millimeters</option>
+        </select>
+      </div>
+      <div class="setting dimensions" id="dimensions-pixels">
+        <label for="width-px">Width (px):</label>
+        <input type="number" id="width-px" placeholder="e.g., 800">
+        <label for="height-px">Height (px):</label>
+        <input type="number" id="height-px" placeholder="e.g., 600">
+      </div>
+      <div class="setting dimensions" id="dimensions-inches" style="display: none;">
+        <label for="width-in">Width (in):</label>
+        <input type="number" id="width-in" placeholder="e.g., 8">
+        <label for="height-in">Height (in):</label>
+        <input type="number" id="height-in" placeholder="e.g., 6">
+      </div>
+      <div class="setting dimensions" id="dimensions-mm" style="display: none;">
+        <label for="width-mm">Width (mm):</label>
+        <input type="number" id="width-mm" placeholder="e.g., 200">
+        <label for="height-mm">Height (mm):</label>
+        <input type="number" id="height-mm" placeholder="e.g., 150">
+      </div>
+      <div class="setting">
+        <label for="dpi">DPI:</label>
+        <input type="number" id="dpi" min="72" max="1200" value="72">
+      </div>
+      <div class="setting">
+        <label for="format">Format:</label>
+        <select id="format">
+          <option value="jpeg">JPEG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WEBP</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Upload and Compress Button -->
+    <button id="compressBtn">Compress Images</button>
+
+    <!-- Progress Indicator -->
+    <div id="progress">
+      <p>Compressing images, please wait...</p>
+    </div>
+
+    <!-- Download Links -->
+    <div id="output">
+      <h2>Download Compressed Images</h2>
+      <a id="downloadZip" href="#" download="compressed-images.zip">Download All as ZIP</a>
+      <div id="individualDownloads"></div>
+    </div>
+  </div>
+
+  <!-- Include JS Libraries via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    // script.js
+
+    // Get DOM Elements
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('fileElem');
+    const compressBtn = document.getElementById('compressBtn');
+    const qualitySlider = document.getElementById('quality');
+    const qualityValue = document.getElementById('qualityValue');
+    const resizeSelect = document.getElementById('resize');
+    const dimensionsPixels = document.getElementById('dimensions-pixels');
+    const dimensionsInches = document.getElementById('dimensions-inches');
+    const dimensionsMm = document.getElementById('dimensions-mm');
+    const dpiInput = document.getElementById('dpi');
+    const formatSelect = document.getElementById('format');
+    const progressIndicator = document.getElementById('progress');
+    const outputSection = document.getElementById('output');
+    const downloadZipLink = document.getElementById('downloadZip');
+    const individualDownloads = document.getElementById('individualDownloads');
+    const previewContainer = document.getElementById('preview-container');
+    const previewSection = document.getElementById('preview-section');
+
+    let filesToUpload = [];
+
+    // Array to hold processed images
+    let processedImages = [];
+
+    // Update quality value display
+    qualitySlider.addEventListener('input', () => {
+      qualityValue.textContent = qualitySlider.value;
+    });
+
+    // Handle Resize Option Display
+    resizeSelect.addEventListener('change', () => {
+      const value = resizeSelect.value;
+      dimensionsPixels.style.display = 'none';
+      dimensionsInches.style.display = 'none';
+      dimensionsMm.style.display = 'none';
+
+      if (value === 'pixels') {
+        dimensionsPixels.style.display = 'block';
+      } else if (value === 'inches') {
+        dimensionsInches.style.display = 'block';
+      } else if (value === 'mm') {
+        dimensionsMm.style.display = 'block';
+      }
+    });
+
+    // Prevent default behaviors for drag-and-drop
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Highlight drop area when item is dragged over
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+      dropArea.classList.add('highlight');
+    }
+
+    function unhighlight(e) {
+      dropArea.classList.remove('highlight');
+    }
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      handleFiles(files);
+    }
+
+    // Handle selected files
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    function handleFiles(files) {
+      let addedCount = 0;
+        [...files].forEach(file => {
+        if (validateFile(file)) {
+          // Avoid adding duplicate files
+          if (!filesToUpload.some(f => f.name === file.name && f.size === file.size)) {
+            filesToUpload.push(file);
+            addPreview(file);
+            addedCount++;
+          }
+        }
+      });
+
+      if (addedCount > 0) {
+        // Show sections after adding at least one image
+        previewSection.style.display = 'block';
+        document.querySelector('.settings').style.display = 'flex';
+        compressBtn.style.display = 'inline-block';
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Files Added',
+          text: `${addedCount} file(s) added for compression.`,
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+
+      // Update delete buttons visibility
+      updateDeleteButtons();
+    }
+
+    function validateFile(file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (validTypes.includes(file.type)) {
+        return true;
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File Type',
+          text: `File type not supported: ${file.name}`,
+        });
+        return false;
+      }
+    }
+
+    function addPreview(file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const previewItem = document.createElement('div');
+        previewItem.classList.add('preview-item');
+
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.alt = file.name;
+
+        // Create Delete Button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+        deleteBtn.title = 'Delete Image';
+
+        // Attach event listener to delete button
+        deleteBtn.addEventListener('click', () => {
+          // Remove from filesToUpload
+          filesToUpload = filesToUpload.filter(f => f !== file);
+          // Remove preview element
+          previewContainer.removeChild(previewItem);
+          // Update delete buttons visibility
+          if (filesToUpload.length === 0) {
+            resetPage();
+          }
+
+          // If no files left, hide the preview section and other sections
+          if (filesToUpload.length === 0) {
+            previewSection.style.display = 'none';
+            document.querySelector('.settings').style.display = 'none';
+            compressBtn.style.display = 'none';
+          }
+
+          Swal.fire({
+            icon: 'info',
+            title: 'Image Removed',
+            text: `${file.name} has been removed.`,
+            timer: 1500,
+            showConfirmButton: false
+          });
+        });
+
+        previewItem.appendChild(img);
+        previewItem.appendChild(deleteBtn);
+
+        const buttonGroup = document.createElement('div');
+        buttonGroup.classList.add('button-group');
+
+        const originalBtn = document.createElement('button');
+        originalBtn.textContent = 'Original';
+        originalBtn.classList.add('original-btn');
+        originalBtn.addEventListener('click', () => {
+          Swal.fire({
+            title: 'Original Image',
+            imageUrl: event.target.result,
+            imageAlt: file.name,
+            width: 'auto',
+            heightAuto: true
+          });
+        });
+
+        const compressedBtn = document.createElement('button');
+        compressedBtn.textContent = 'Compressed';
+        compressedBtn.classList.add('compressed-btn');
+        compressedBtn.addEventListener('click', () => {
+          const processed = processedImages.find(img => img.originalName === file.name);
+          if (processed && processed.compressedDataURL) {
+            Swal.fire({
+              title: 'Compressed Image',
+              imageUrl: processed.compressedDataURL,
+              imageAlt: processed.compressedName,
+              width: 'auto',
+              heightAuto: true
+            });
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Compression Pending',
+              text: 'Please compress the images first.'
+            });
+          }
+        });
+
+        buttonGroup.appendChild(originalBtn);
+        buttonGroup.appendChild(compressedBtn);
+
+        previewItem.appendChild(buttonGroup);
+
+        previewContainer.appendChild(previewItem);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateDeleteButtons() {
+      const deleteButtons = document.querySelectorAll('.delete-btn');
+      if (filesToUpload.length > 1) {
+        deleteButtons.forEach(btn => btn.style.display = 'block');
+      } else {
+        deleteButtons.forEach(btn => btn.style.display = 'none');
+      }
+    }
+
+    // Handle compression
+    compressBtn.addEventListener('click', async () => {
+      if (filesToUpload.length === 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Images',
+          text: 'Please add images to compress.',
+        });
+        return;
+      }
+
+      // Show progress indicator
+      progressIndicator.style.display = 'block';
+      outputSection.style.display = 'none';
+      individualDownloads.innerHTML = '';
+      processedImages = []; // Reset processed images
+
+      const quality = parseInt(qualitySlider.value);
+      const resizeOption = resizeSelect.value;
+      const dpi = parseInt(dpiInput.value);
+      const format = formatSelect.value;
+
+      // Initialize JSZip
+      const zip = new JSZip();
+
+      // Process each file sequentially to avoid overwhelming the browser
+      for (let file of filesToUpload) {
+        try {
+          const img = await loadImage(file);
+          let { canvas, newWidth, newHeight } = await processImage(img, resizeOption, dpi);
+          const blob = await canvasToBlob(canvas, format, quality);
+
+          // Convert blob to DataURL for preview
+          const compressedDataURL = await blobToDataURL(blob);
+
+          // Add to processedImages array
+          processedImages.push({
+            originalName: file.name,
+            compressedName: getCompressedFileName(file.name, format),
+            compressedDataURL: compressedDataURL,
+            blob: blob
+          });
+
+          // Add to ZIP
+          zip.file(getCompressedFileName(file.name, format), blob);
+
+          // Create individual download link
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = getCompressedFileName(file.name, format);
+          link.textContent = getCompressedFileName(file.name, format);
+          link.target = '_blank'; // Open in new tab
+          const div = document.createElement('div');
+          div.classList.add('individual-download');
+          div.appendChild(link);
+          individualDownloads.appendChild(div);
+
+        } catch (error) {
+          console.error(`Error processing ${file.name}:`, error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Processing Error',
+            text: `Error processing ${file.name}.`,
+          });
+        }
+      }
+
+      // Generate ZIP and set download link
+      zip.generateAsync({ type: 'blob' }).then(function(content) {
+        downloadZipLink.href = URL.createObjectURL(content);
+        
+        
+      });
+
+      // Hide progress and show output
+      progressIndicator.style.display = 'none';
+      outputSection.style.display = 'block';
+
+      // Clear filesToUpload
+    
+
+      // Hide preview section and settings after compression
+      previewSection.style.display = 'block';
+      document.querySelector('.settings').style.display = 'flex';
+      compressBtn.style.display = 'inline-block';
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Compression Complete',
+        text: 'Your images have been compressed successfully.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    });
+
+    // Helper Functions
+
+    function loadImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            resolve(img);
+          };
+          img.onerror = function() {
+            reject(new Error('Image load error'));
+          };
+          img.src = event.target.result;
+        };
+        reader.onerror = function() {
+          reject(new Error('File read error'));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function processImage(img, resizeOption, dpi) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      let newWidth = img.width;
+      let newHeight = img.height;
+
+      if (resizeOption === 'pixels') {
+        const widthPx = parseInt(document.getElementById('width-px').value);
+        const heightPx = parseInt(document.getElementById('height-px').value);
+        if (!isNaN(widthPx) && widthPx > 0) newWidth = widthPx;
+        if (!isNaN(heightPx) && heightPx > 0) newHeight = heightPx;
+      } else if (resizeOption === 'inches') {
+        const widthIn = parseFloat(document.getElementById('width-in').value);
+        const heightIn = parseFloat(document.getElementById('height-in').value);
+        if (!isNaN(widthIn) && widthIn > 0) newWidth = Math.round(widthIn * dpi);
+        if (!isNaN(heightIn) && heightIn > 0) newHeight = Math.round(heightIn * dpi);
+      } else if (resizeOption === 'mm') {
+        const widthMm = parseFloat(document.getElementById('width-mm').value);
+        const heightMm = parseFloat(document.getElementById('height-mm').value);
+        if (!isNaN(widthMm) && widthMm > 0) newWidth = Math.round((widthMm / 25.4) * dpi);
+        if (!isNaN(heightMm) && heightMm > 0) newHeight = Math.round((heightMm / 25.4) * dpi);
+      }
+
+      // Set canvas dimensions
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      // Draw image onto canvas
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+      // Note: DPI metadata is not directly supported by Canvas API.
+      // The DPI setting here affects the pixel dimensions based on physical size inputs.
+
+      return { canvas, newWidth, newHeight };
+    }
+
+    function canvasToBlob(canvas, format, quality) {
+      return new Promise((resolve, reject) => {
+        let mimeType = 'image/jpeg';
+        if (format === 'png') mimeType = 'image/png';
+        if (format === 'webp') mimeType = 'image/webp';
+
+        canvas.toBlob(function(blob) {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Canvas toBlob failed'));
+          }
+        }, mimeType, quality / 100);
+      });
+    }
+
+    function getCompressedFileName(originalName, format) {
+      const name = originalName.substring(0, originalName.lastIndexOf('.')) || originalName;
+      return `${name}-compressed.${format}`;
+    }
+
+    function blobToDataURL(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          resolve(event.target.result);
+        };
+        reader.onerror = function() {
+          reject(new Error('Blob to DataURL failed'));
+        };
+        reader.readAsDataURL(blob);
+      });
+    }
+    
+    
+    function resetPage() {
+  // Hide preview section, settings, and compress button
+  previewSection.style.display = 'none';
+  document.querySelector('.settings').style.display = 'none';
+  compressBtn.style.display = 'none';
+  outputSection.style.display = 'none'
+
+  // Clear the filesToUpload array and reset the file input
+  filesToUpload = [];
+  fileInput.value = '';
+
+  // Clear the preview container
+  previewContainer.innerHTML = '';
+
+  // Allow new uploads (reset any disabled states if needed)
+  dropArea.classList.remove('disabled'); // Assuming you disabled it earlier, remove this if not needed
+
+  Swal.fire({
+    icon: 'success',
+    title: 'Page Reset',
+    text: 'You can now upload new images.',
+    timer: 1500,
+    showConfirmButton: false
+  });
+}
+
+  </script>
+
+</body>
+
+</html>

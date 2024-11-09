@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="https://i.imghippo.com/files/dZxI61729062542.png"
+      type="image/x-icon"
+    />
+    <title>Services</title>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        background-color: #333;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        /* Make the navbar fixed */
+        width: 100%;
+        /* Make it full width */
+        top: 0;
+        /* Align to the top */
+        z-index: 1000;
+        /* Ensure it stays above other content */
+      }
+
+      .hamburger {
+        cursor: pointer;
+        font-size: 24px;
+        color: white;
+      }
+
+      /* Menu styles */
+      .menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background-color: #333;
+        width: 250px;
+        padding: 20px;
+        color: white;
+      }
+
+      .menu a {
+        color: white;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid #444;
+      }
+
+      .menu a:hover {
+        background-color: #444;
+      }
+
+      .menu.active {
+        display: flex;
+      }
+
+      /* Tiles Section */
+      .tiles-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 70px auto;
+        padding: 20px;
+      }
+
+      .tile {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        padding: 25px;
+        transition: transform 0.3s;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .tile img {
+        width: 300px;
+        height: 200px;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border-radius: 5px;
+      }
+
+      .tile h2 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 10px;
+        text-align: left;
+      }
+
+      .tile p {
+        font-size: 16px;
+        color: #555;
+        text-align: left;
+        line-height: 1.3;
+      }
+
+      .tile:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1),
+          0 8px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      @media (min-width: 600px) {
+        .menu {
+          display: flex;
+          flex-direction: row;
+          position: static;
+          width: auto;
+          padding: 0;
+        }
+        .hamburger {
+          display: none;
+        }
+        .tile img {
+          width: 330px;
+          height: 200px;
+          object-fit: cover;
+          margin-bottom: 15px;
+          border-radius: 8px;
+        }
+      }
+      /* Search Bar styles */
+      .search-container {
+        position: relative;
+      }
+
+      .search-input {
+        padding: 8px 8px;
+        border: none;
+        border-radius: 8px;
+        width: 150px;
+        transition: width 0.4s ease-in-out;
+        margin-right: 20px;
+      }
+
+      .search-input:focus {
+        width: 200px;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar with hamburger -->
+    <div class="navbar">
+      <div class="hamburger" id="hamburger">&#9776;</div>
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="report.html">Report a Problem</a>
+      </div>
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          id="search-input"
+          placeholder="Search..."
+        />
+      </div>
+    </div>
+
+    <!-- Tiles Section -->
+    <div class="tiles-container" id="tiles-container">
+      <a href="lcmhcf.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/fnRQh1729043534.jpg"
+          alt="Tile Image 1"
+        />
+        <h2>1. LCM & HCF Calculator</h2>
+        <p>
+          This tool helps users calculate the Least Common Multiple (LCM) and
+          Highest Common Factor (HCF) for multiple numbers, offering separate
+          sections for each calculation method.
+        </p>
+      </a>
+
+      <a href="timecalculator.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/3dqRX1729066133.jpg"
+          alt="Tile Image 2"
+        />
+        <h2>2. Time Calculator</h2>
+        <p>
+          This tool performs time-based operations such as adding, subtracting,
+          multiplying, and dividing days, hours, minutes, and seconds. It
+          provides clear input fields and calculates results efficiently for
+          easy time management.
+        </p>
+      </a>
+
+      <a href="word.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/EYF1B1729066143.jpg"
+          alt="Tile Image 3"
+        />
+        <h2>3. Word Rearranger</h2>
+        <p>
+          This tool takes user-entered words and generates all possible
+          rearranged combinations of those words, useful for creating anagrams
+          or exploring different word sequences.
+        </p>
+      </a>
+
+      <a href="otp.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/Ipoa31729066153.jpg"
+          alt="Tile Image 4"
+        />
+        <h2>4. OTP Validation Prototype</h2>
+        <p>
+          A basic prototype for generating, sending, and verifying One-Time
+          Passwords (OTPs) for user authentication purposes, with options to
+          resend the code.
+        </p>
+      </a>
+      <a href="imagecompressor.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/BOQMk1729066163.jpg"
+          alt="Tile Image 5"
+        />
+        <h2>5. Image Compressor</h2>
+        <p>
+          A tool to compress images by adjusting quality and size, with options
+          for format conversion (JPEG, PNG, WEBP). It provides quick resizing
+          and compression features for optimal file management.
+        </p>
+      </a>
+      <a href="factor.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/D0IXf1729066171.jpg"
+          alt="Tile Image 6"
+        />
+        <h2>6. Common Factor Finder</h2>
+        <p>
+          This tool calculates the common factors of two or more numbers,
+          helping users quickly identify shared divisors. It provides a simple
+          interface for inputting values and viewing results.
+        </p>
+      </a>
+      <a href="resume.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/iGRzb1729071137.jpg"
+          alt="Tile Image 7"
+        />
+        <h2>7. Resume Builder</h2>
+        <p>
+          A customizable resume generator that allows users to input personal
+          details, education, work experience, and skills. It formats the resume
+          neatly and provides the option to download it as a PDF.
+        </p>
+      </a>
+      <a href="length.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/2FEbM1729070954.jpg"
+          alt="Tile Image 8"
+        />
+        <h2>8. Length Conversion Tool</h2>
+        <p>
+          A utility that converts various units of length (meters, kilometers,
+          feet, miles, etc.) to other units. It provides instant conversion
+          results based on user input.
+        </p>
+      </a>
+      <a href="tictactoe.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/bHCBN1729070943.jpg"
+          alt="Tile Image 9"
+        />
+        <h2>9. Tic-Tac-Toe Game</h2>
+        <p>
+          A classic two-player Tic-Tac-Toe game with difficulty levels (Easy,
+          Medium, Hard) and an option to play with a friend. It features a reset
+          button for quick restarts.
+        </p>
+      </a>
+      <a href="weight.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/xshvp1729070966.jpg"
+          alt="Tile Image 10"
+        />
+        <h2>10. Weight Conversion Tool</h2>
+        <p>
+          This tool converts weights between different units such as kilograms,
+          grams, pounds, and ounces. Users can input the weight and choose both
+          input and output units for quick conversion results.
+        </p>
+      </a>
+
+      <a href="age.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/3BjCT1729070987.jpg"
+          alt="Tile Image 11"
+        />
+        <h2>11. Age Calculator</h2>
+        <p>
+          This tool calculates your exact age in years, months, and days based
+          on the input birthdate. It provides a clear breakdown of the results
+          after selecting the birth year, month, and day.
+        </p>
+      </a>
+
+      <a href="snake.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/uGKBI1729070975.jpg"
+          alt="Tile Image 12"
+        />
+        <h2>12. Snake Game</h2>
+        <p>
+          A web-based version of the classic Snake game where players control a
+          snake that grows longer as it consumes food. The objective is to avoid
+          hitting the walls or the snake's own body.
+        </p>
+      </a>
+      <a href="maingame.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/UIL151729072366.jpg"
+          alt="Tile Image 13"
+        />
+        <h2>13. Sliding Puzzle Game</h2>
+        <p>
+          A puzzle game where users can choose grid sizes (3×3, 4×4, 5×5, 6×6)
+          and solve the sliding puzzle by arranging the shuffled tiles into the
+          correct order.
+        </p>
+      </a>
+      <a href="grammarmain.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/1629i1729072141.jpg"
+          alt="Tile Image 14"
+        />
+        <h2>14. Grammar Quiz</h2>
+        <p>
+          A grammar-based quiz with 20 questions. Users have 20 seconds per
+          question, and answers are automatically submitted after time runs out.
+          After completing the quiz, the result is displayed along with an
+          option to review incorrect answers.
+        </p>
+      </a>
+      <a href="notes.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/RTNwm1729072149.jpg"
+          alt="Tile Image 15"
+        />
+        <h2>15. Note Maker</h2>
+        <p>
+          A simple note-making tool that allows users to create, view, edit, and
+          delete notes. Each note is listed with a timestamp for easy
+          organization and management.
+        </p>
+      </a>
+      <a href="text2pdf.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/wRX721729072161.jpg"
+          alt="Tile Image 16"
+        />
+        <h2>16. Text to PDF Converter</h2>
+        <p>
+          This tool takes user-entered words and generates all possible
+          rearranged combinations of those words, useful for creating anagrams
+          or exploring different word sequences.
+        </p>
+      </a>
+      <a href="brainvita.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/Fo5SW1729072173.jpg"
+          alt="Tile Image 17"
+        />
+        <h2>17. Brainvita Game</h2>
+        <p>
+          A single-player puzzle game where the objective is to remove as many
+          marbles as possible, leaving only one on the board. The player jumps
+          over adjacent marbles to eliminate them, following specific movement
+          rules.
+        </p>
+      </a>
+      <a href="bmi&bmr.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/9Mm4h1729072182.jpg"
+          alt="Tile Image 18"
+        />
+        <h2>18. BMI & BMR Calculator</h2>
+        <p>
+          This tool calculates Body Mass Index (BMI) and Basal Metabolic Rate
+          (BMR) based on user inputs such as height, weight, age, and gender. It
+          provides results for BMI, BMR, and an ideal weight range.
+        </p>
+      </a>
+
+      <a href="memorygame.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/lz7251LnM.jpg"
+          alt="Tile Image 19"
+        />
+        <h2>19. Memory Game</h2>
+        <p>
+          It is a Memory Game for Kids with three difficulty levels: Easy,
+          Medium, and Hard. It provides an interactive and visually engaging
+          memory-matching game with a simple, fun design aimed at young players.
+        </p>
+      </a>
+
+      <a href="flappybird.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/fuLU4570pB.jpg"
+          alt="Tile Image 20"
+        />
+        <h2>20. Flappy Bird Game</h2>
+        <p>
+          Control a small yellow bird, tapping the screen to flap its wings and
+          navigate through endless pairs of green pipes. Avoid collisions and
+          maintain altitude to score points. Simple, addictive, and notoriously
+          challenging.
+        </p>
+      </a>
+
+      <a href="currencyconverter.html" class="tile">
+        <img
+          src="https://i.imghippo.com/files/nn1513ofo.jpg"
+          alt="Tile Image 21"
+        />
+        <h2>21. Currency Converter</h2>
+        <p>
+          A currency converter is a tool that calculates the equivalent value of
+          one currency into another. It provides: - Real-time exchange rates -
+          Support for multiple global currencies - Accurate conversions -
+          User-friendly interface
+        </p>
+      </a>
+    </div>
+
+    <!-- JavaScript to toggle the menu -->
+    <script>
+      document
+        .getElementById("hamburger")
+        .addEventListener("click", function (event) {
+          var menu = document.getElementById("menu");
+          menu.classList.toggle("active");
+          event.stopPropagation(); // Prevents click event on hamburger from propagating
+        });
+
+      // Hide the menu if clicking outside
+      document.addEventListener("click", function (event) {
+        var menu = document.getElementById("menu");
+        var hamburger = document.getElementById("hamburger");
+        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+          menu.classList.remove("active");
+        }
+      });
+
+      const searchInput = document.getElementById("search-input");
+      const tilesContainer = document.getElementById("tiles-container");
+      const tiles = Array.from(tilesContainer.getElementsByClassName("tile"));
+
+      searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase();
+
+        tiles.forEach((tile) => {
+          const title = tile.querySelector("h2").innerText.toLowerCase();
+          const description = tile.querySelector("p").innerText.toLowerCase();
+
+          if (title.includes(query) || description.includes(query)) {
+            tile.style.display = "block"; // Show matching tile
+          } else {
+            tile.style.display = "none"; // Hide non-matching tile
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

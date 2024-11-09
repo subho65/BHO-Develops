@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCM & HCF Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: calc(100% - 22px);
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            width: 45%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .swal-button {
+            width: 100% !important;
+        }
+
+        .swal-footer {
+            text-align: center;
+        }
+
+        .swal-content span {
+            
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>LCM & HCF Calculator</h2>
+        <input type="text" id="numbers" placeholder="Enter numbers separated by comma">
+        <div>
+            <button onclick="calculate('lcm')">Calculate LCM</button>
+            <button onclick="calculate('hcf')">Calculate HCF</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        function gcd(a, b) {
+            return b === 0 ? a : gcd(b, a % b);
+        }
+
+        function lcm(a, b) {
+            return (a * b) / gcd(a, b);
+        }
+
+        function calculateGCDForMultiple(numbers) {
+            return numbers.reduce((acc, curr) => gcd(acc, curr));
+        }
+
+        function calculateLCMForMultiple(numbers) {
+            return numbers.reduce((acc, curr) => lcm(acc, curr));
+        }
+
+        function findFactors(num) {
+            let factors = [];
+            for (let i = 1; i <= num; i++) {
+                if (num % i === 0) {
+                    factors.push(i);
+                }
+            }
+            return factors;
+        }
+
+        function findCommonFactors(numbers) {
+            const factorLists = numbers.map(num => findFactors(num));
+            return factorLists.reduce((common, factors) => common.filter(factor => factors.includes(factor)));
+        }
+
+        function calculate(type) {
+            const input = document.getElementById('numbers').value.trim();
+            if (!input) {
+                swal({
+                    title: "Error",
+                    text: "Please add numbers to calculate LCM or HCF!",
+                    icon: "error",
+                    dangerMode: true,
+                    button: {
+                        text: "OK",
+                        className: "swal-button",
+                    }
+                });
+                return;
+            }
+
+            const numbers = input.split(',').map(Number);
+
+            if (numbers.some(isNaN)) {
+                swal("Error", "Please enter valid numbers separated by commas!", "error");
+                return;
+            }
+
+            if (numbers.length < 2) {
+                swal({
+                    title: "Error",
+                    text: "Please add at least two numbers!",
+                    icon: "error",
+                    dangerMode: true,
+                    button: {
+                        text: "OK",
+                        className: "swal-button",
+                    }
+                });
+                return;
+            }
+
+            let result, steps = '';
+            if (type === 'hcf') {
+                result = calculateGCDForMultiple(numbers);
+                const commonFactors = findCommonFactors(numbers);
+                steps = `Find the factors for each number:<br><br>${numbers.map(num => `The factors of ${num} are ${JSON.stringify(findFactors(num))}`).join('<br><br>')}<br><br>Find the factors that are common to all ${numbers.length} numbers:<br><br>Common factors are ${JSON.stringify(commonFactors)}<br><br>The HCF is the largest factor common to all numbers:<br><br><strong>HCF is ${result}</strong>`;
+            } else {
+                result = calculateLCMForMultiple(numbers);
+                steps = `Find some multiples for each number:<br><br>${numbers.map(num => `Some multiples of ${num} are [${Array.from({ length: 10 }, (_, i) => num * (i + 1)).join(', ')} ...]`).join('<br><br>')}<br><br>Find the Lowest Common Multiple of the numbers ${numbers.join(', ')} is ${result} <br><br><strong>LCM is ${result}</strong>`;
+            }
+
+            swal({
+                title: `Result: ${type.toUpperCase()}`,
+                content: {
+                    element: "span",
+                    attributes: {
+                        innerHTML: `<strong style="font-size: 1.5em; color: #000000;">${type.toUpperCase()} of ${numbers.join(', ')} is ${result}</strong>`
+                    },
+                },
+                icon: "success",
+                buttons: {
+                    confirm: {
+                        text: "Show Steps",
+                        value: "steps",
+                        className: "swal-button"
+                    }
+                }
+            }).then((value) => {
+                if (value === "steps") {
+                    swal({
+                        title: "Steps",
+                        content: {
+                            element: "span",
+                            attributes: {
+                                innerHTML: steps
+                            }
+                        },
+                        icon: "info",
+                        button: {
+                            text: "OK",
+                            className: "swal-button",
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BHO Develops</title>
+    <link
+      rel="icon"
+      href="https://i.imghippo.com/files/dZxI61729062542.png"
+      type="image/x-icon"
+    />
+  </head>
+  <style>
+    @font-face {
+      font-family: "Liberty";
+      src: url("liberty.otf");
+    }
+    body {
+      background-color: #efefef;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    h1 {
+      font-size: 15pt;
+      color: #333;
+      text-align: center;
+      padding: 18px 0 18px 0;
+      margin: 0 0 10px 0;
+      border: 4px dashed #333;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      padding: 0;
+      margin: 0;
+    }
+
+    .img-circle {
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+      transition: transform 0.5s;
+    }
+
+    .img-circle:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3), 0 8px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .section {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+
+    #header {
+      background-image: url("https://i.imghippo.com/files/MiVXx1729155547.jpg");
+      background-size: cover;
+      height: 250px;
+      margin-top: 50px;
+    }
+
+    #header img {
+      display: block;
+      width: 150px;
+      height: 150px;
+      margin: auto;
+    }
+
+    .quote {
+      font-size: 12pt;
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    table,
+    th,
+    td {
+      border: 2px solid #cecece;
+      border-collapse: collapse;
+      text-align: center;
+      table-layout: fixed;
+      font-size: 10px;
+      padding: 10px;
+    }
+
+    .selected {
+      background-color: #333;
+      font-weight: bold;
+      color: white;
+    }
+
+    li {
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    progress {
+      width: 90%;
+      height: 20px;
+      color: #3fb6b2;
+      background: #efefef;
+    }
+
+    progress::-webkit-progress-bar {
+      background: #efefef;
+    }
+
+    progress::-webkit-progress-value {
+      background: #333;
+    }
+
+    progress::-moz-progress-bar {
+      color: #3fb6b2;
+      background: #efefef;
+    }
+
+    .face {
+      transform: scale(0.4);
+      margin: 0 auto;
+      display: block;
+      margin-top: -35px;
+      margin-bottom: -25px;
+    }
+
+    #contacts img {
+      height: 50px;
+      width: 50px;
+      margin-left: 7px;
+      margin-right: 7px;
+    }
+
+    #contacts a {
+      text-decoration: none;
+    }
+
+    #contacts img:hover {
+      opacity: 0.8;
+    }
+
+    #contacts {
+      text-align: center;
+    }
+
+    .copyright {
+      font-size: 8pt;
+      text-align: right;
+      padding-bottom: 10px;
+      color: grey;
+    }
+
+    .navbar {
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .hamburger {
+      cursor: pointer;
+      font-size: 24px;
+      color: white;
+    }
+
+    .menu {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      background-color: #333;
+      width: 250px;
+      padding: 20px;
+      color: white;
+    }
+
+    .menu a {
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+    }
+
+    .menu a:hover {
+      background-color: #444;
+    }
+
+    .menu.active {
+      display: flex;
+    }
+
+    @media (min-width: 600px) {
+      .menu {
+        display: flex;
+        flex-direction: row;
+        position: static;
+        width: auto;
+        padding: 0;
+        top: auto;
+        /* Reset for desktop view */
+      }
+
+      #header {
+        height: 300px;
+        background-size: cover;
+        margin-top: 70px;
+      }
+
+      #header img {
+        width: 202px;
+        height: 202px;
+        
+      }
+
+      .hamburger {
+        display: none;
+      }
+
+      table,
+      th,
+      td {
+        font-size: 20px;
+      }
+      #para {
+        font-size: 20px;
+      }
+      .quote {
+        font-size: 20px;
+      }
+
+    }
+    .container {
+      display: grid;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+
+    /*header css*/
+    body .text {
+      font-family: "Liberty";
+      font-weight: 100;
+      font-size: 2.2rem;
+      letter-spacing: -0.2em;
+      flex-flow: row;
+      text-align: center;
+      justify-content: center;
+    }
+
+    body .text .letter {
+      color: #ffffff;
+      text-shadow: 6px 5px 0.3rem #000000;
+      display: inline-block;
+    }
+
+    body .text .letter.letter-3,
+    body .text .letter.letter-4,
+    body .text .letter.letter-5 {
+      transform: rotate(10deg);
+      -webkit-animation: flicker 2s ease-in-out infinite alternate;
+      animation: flicker 2s ease-in-out infinite alternate;
+    }
+
+    @-webkit-keyframes flicker {
+      0% {
+        opacity: 1;
+        transform: rotate(10deg);
+      }
+
+      5% {
+        opacity: 1;
+        transform: rotate(10deg);
+      }
+
+      5.5% {
+        opacity: 0;
+        transform: rotate(10deg);
+      }
+
+      6% {
+        opacity: 1;
+        transform: rotate(10deg);
+      }
+
+      6.5% {
+        opacity: 1;
+        transform: rotate(10deg);
+      }
+
+      7% {
+        opacity: 0;
+        transform: rotate(10deg);
+      }
+
+      8% {
+        opacity: 1;
+        transform: rotate(10deg);
+      }
+
+      50% {
+        opacity: 1;
+        transform: rotate(13deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: rotate(10deg);
+      }
+    }
+
+    @media (min-width: 768px) {
+  body .text {
+    font-size: 5rem;
+    margin: 0; /* Increase font size for larger screens */
+  }
+}
+
+  </style>
+
+  <body>
+    <!-- Navbar with hamburger -->
+    <div class="navbar">
+      <div class="hamburger" id="hamburger">&#9776;</div>
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="report.html">Report a Problem</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- header start -->
+      <div id="header" class="section">
+        <img
+          alt=""
+          class="img-circle"
+          src="https://i.imghippo.com/files/Dust8566cPA.jpeg"
+        />
+        <!--header name start-->
+        <h2 class="text">
+          <span class="letter letter-1">S</span>
+          <span class="letter letter-2">U</span>
+          <span class="letter letter-3">B</span>
+          <span class="letter letter-4">H</span>
+          <span class="letter letter-5">O</span>
+          <span class="letter letter-6">J</span>
+          <span class="letter letter-7">A</span>
+          <span class="letter letter-8">T</span>
+          <span class="letter letter-9">I</span>
+          <span class="letter letter-10"></span>
+          <span class="letter letter-11">D</span>
+          <span class="letter letter-12">U</span>
+          <span class="letter letter-13">T</span>
+          <span class="letter letter-14">T</span>
+          <span class="letter letter-15">A</span>
+        </h2>
+      </div>
+      <!-- header end -->
+
+      <!-- About Me section start -->
+      <div id="para" class="section">
+        <h1><span>About Me</span></h1>
+        <p style="text-align: justify; line-height: 1.5">
+          Welcome to my world <b>BHO Develops</b>! I am Subhojati Dutta, a
+          dedicated tutor with a degree in Mathematics Honours and a passion for
+          teaching Science. Here, I share my enthusiasm for coding through
+          various projects designed to inspire and engage learners. My work
+          reflects my commitment to education and innovation, combining
+          analytical thinking with creativity. You’ll find resources and tools
+          that not only showcase my skills but also aim to enhance the learning
+          experience. It showcases various projects, including calculators,
+          games, and utilities like an LCM & HCF tool, OTP validation prototype,
+          image compression, and more. It also features a section to report
+          problems with the website. The design focuses on innovation and
+          creative problem-solving. I invite you to explore my journey and
+          connect with my passion for teaching.
+        </p>
+        <p class="quote">Subhojati Dutta, DEVELOPER</p>
+      </div>
+      <!-- About Me section end -->
+
+      <!-- My Schedule section start -->
+      <div class="section">
+        <h1><span>My Coding Schedule</span></h1>
+        <table>
+          <tr>
+            <th>Day</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+          </tr>
+          <tr>
+            <td>8-8:30</td>
+            <td class="selected">Learn</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>9-10</td>
+            <td></td>
+            <td class="selected">Practice</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>1-1:30</td>
+            <td></td>
+            <td></td>
+            <td class="selected">Play</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>3:45-5</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="selected">Code</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>6-6:15</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="selected">Discuss</td>
+          </tr>
+        </table>
+      </div>
+      <!-- My Schedule section end -->
+
+      <!-- My Skills section start -->
+      <div class="section">
+        <h1><span>My Skills</span></h1>
+        <ul>
+          <li>
+            HTML <br />
+            <progress min="0" max="100" value="80"></progress>
+          </li>
+          <li>
+            CSS <br />
+            <progress min="0" max="100" value="50"></progress>
+          </li>
+          <li>
+            Javascript<br />
+            <progress min="0" max="100" value="60"></progress>
+          </li>
+        </ul>
+      </div>
+      <!-- My Skills section end -->
+
+      <!-- Contacts section start -->
+      <div class="section" id="contacts">
+        <h1><span>Follow Me</span></h1>
+        <div>
+          <a
+            href="https://www.sololearn.com/profile/26458005/?ref=app"
+            target="_blank"
+          >
+            <img
+              alt="SoloLearn"
+              src="https://i.imghippo.com/files/IvpXl1729158238.png"
+            />
+          </a>
+          <a
+            href="https://www.facebook.com/profile.php?id=61564504390572&mibextid=ZbWKwL"
+            target="_blank"
+          >
+            <img
+              alt="Facebook"
+              src="https://www.sololearn.com/Uploads/icons/facebook.png"
+            />
+          </a>
+          <a
+            href="https://www.instagram.com/subhojati/profilecard/?igsh=YnZtb3o2bjd1c3I3"
+            target="_blank"
+          >
+            <img
+              alt="instagram"
+              src="https://i.imghippo.com/files/WkasB1729156447.png"
+            />
+          </a>
+        </div>
+      </div>
+      <!-- Contacts section end -->
+
+      <div class="copyright">© 2017 My Blog. All rights reserved.</div>
+      <!-- JavaScript to toggle the menu -->
+    </div>
+
+    <script>
+      document
+        .getElementById("hamburger")
+        .addEventListener("click", function (event) {
+          var menu = document.getElementById("menu");
+          menu.classList.toggle("active");
+          event.stopPropagation(); // Prevents click event on hamburger from propagating
+        });
+
+      // Hide the menu if clicking outside
+      document.addEventListener("click", function (event) {
+        var menu = document.getElementById("menu");
+        var hamburger = document.getElementById("hamburger");
+        if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+          menu.classList.remove("active");
+        }
+      });
+    </script>
+  </body>
+</html>

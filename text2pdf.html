@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to PDF</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100em;
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        #toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        #toolbar button,
+        #toolbar input[type="color"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        #toolbar button:hover,
+        #toolbar input[type="color"]:hover {
+            background-color: #0056b3;
+        }
+
+        #toolbar button i {
+            margin-right: 5px;
+        }
+
+        #toolbar input[type="color"] {
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        /* Editor styling */
+        #editor {
+            border: 1px solid #ccc;
+            min-height: 35em;
+            padding: 15px;
+            box-sizing: border-box;
+            user-select: text;
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            border-radius: 1px;
+            position: relative;
+        }
+
+        /* Placeholder styling */
+        #editor:empty:before {
+            content: attr(data-placeholder);
+            color: #888;
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            pointer-events: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 100%;
+            }
+
+            #toolbar {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="toolbar">
+            <button onclick="boldText()" title="Bold"><i class="fas fa-bold"></i></button>
+            <button onclick="underlineText()" title="Underline"><i class="fas fa-underline"></i></button>
+            <button onclick="italicText()" title="Italic"><i class="fas fa-italic"></i></button>
+            <button onclick="increaseTextSize()" title="Increase Text Size"><i class="fas fa-plus"></i></button>
+            <button onclick="decreaseTextSize()" title="Decrease Text Size"><i class="fas fa-minus"></i></button>
+            <button onclick="alignText('left')" title="Align Left"><i class="fas fa-align-left"></i></button>
+            <button onclick="alignText('center')" title="Align Center"><i class="fas fa-align-center"></i></button>
+            <button onclick="alignText('right')" title="Align Right"><i class="fas fa-align-right"></i></button>
+            <button onclick="downloadPDF()" title="Download PDF"><i class="fas fa-file-download"></i></button>
+            <!-- Color Picker -->
+            <input type="color" id="textColor" title="Change Text Color" onchange="changeTextColor(this.value)">
+        </div>
+        <div id="editor" contenteditable="true" data-placeholder="Start editing here..."></div>
+    </div>
+
+    <script>
+        function boldText() {
+            document.execCommand('bold');
+        }
+
+        function underlineText() {
+            document.execCommand('underline');
+        }
+
+        function italicText() {
+            document.execCommand('italic');
+        }
+
+        function increaseTextSize() {
+            changeSelectedTextSize('larger');
+        }
+
+        function decreaseTextSize() {
+            changeSelectedTextSize('smaller');
+        }
+
+        function changeSelectedTextSize(size) {
+            var selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                var range = selection.getRangeAt(0);
+                var selectedContents = range.extractContents();
+                var span = document.createElement("span");
+
+                // Apply size increase or decrease
+                if (size === 'larger') {
+                    span.style.fontSize = "larger"; // Increase size
+                } else {
+                    span.style.fontSize = "smaller"; // Decrease size
+                }
+
+                span.appendChild(selectedContents);
+                range.insertNode(span);
+            }
+        }
+
+        function alignText(alignType) {
+            document.execCommand('justify' + alignType);
+        }
+
+        function downloadPDF() {
+            var doc = new jsPDF();
+            var text = document.getElementById('editor').innerHTML;
+
+            doc.fromHTML(text, 15, 15, {
+                'width': 180
+            });
+
+            doc.save('download.pdf');
+        }
+
+        // Function to change text color
+        function changeTextColor(color) {
+            document.execCommand('foreColor', false, color);
+        }
+
+        // Remove placeholder on input
+        const editor = document.getElementById('editor');
+        editor.addEventListener('input', function () {
+            if (editor.innerText.trim().length === 0) {
+                editor.classList.add('empty');
+            } else {
+                editor.classList.remove('empty');
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weight Conversion Tool</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1C1C1C; /* Charcoal background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #E6E6E6; /* Light Silver text */
+        }
+
+        .container {
+            background: #333333; /* Dark Metallic Gray */
+            padding: 30px 50px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #D4AF37; /* Metallic Gold */
+            margin-bottom: 20px;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        label {
+            font-weight: bold;
+            margin: 10px 0 5px;
+            display: block;
+            color: #C0C0C0; /* Silver */
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #A9A9A9; /* Dark Silver */
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #2E2E2E; /* Metallic Gray */
+            color: #E6E6E6; /* Light Silver */
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #D4AF37; /* Metallic Gold */
+            outline: none;
+        }
+
+        input[type="button"] {
+            background-color: #D4AF37; /* Metallic Gold */
+            color: #1C1C1C; /* Charcoal */
+            padding: 14px 20px;
+            margin: 20px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        input[type="button"]:hover {
+            background-color: #FFD700; /* Brighter Gold */
+            color: #1C1C1C; /* Charcoal */
+        }
+    </style>
+    <!-- SweetAlert2 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Weight Conversion Tool</h2>
+        <label for="inputWeight">Enter weight:</label>
+        <input type="text" id="inputWeight" placeholder="Enter weight">
+
+        <label for="inputUnit">Select input unit:</label>
+        <select id="inputUnit">
+            <option value="kg">Kilograms (kg)</option>
+            <option value="g">Grams (g)</option>
+            <option value="lb">Pounds (lb)</option>
+            <option value="oz">Ounces (oz)</option>
+        </select>
+
+        <label for="outputUnit">Select output unit:</label>
+        <select id="outputUnit">
+            <option value="kg">Kilograms (kg)</option>
+            <option value="g">Grams (g)</option>
+            <option value="lb">Pounds (lb)</option>
+            <option value="oz">Ounces (oz)</option>
+        </select>
+
+        <input type="button" value="Convert" onclick="convertWeight()">
+    </div>
+
+    <script>
+        function convertWeight() {
+            // Get the input values
+            var inputWeight = parseFloat(document.getElementById("inputWeight").value);
+            var inputUnit = document.getElementById("inputUnit").value;
+            var outputUnit = document.getElementById("outputUnit").value;
+
+            if (isNaN(inputWeight)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Input',
+                    text: 'Please enter a valid number for the weight.',
+                    confirmButtonColor: '#D4AF37'
+                });
+                return;
+            }
+
+            // Convert to kilograms
+            var weightInKg;
+            switch (inputUnit) {
+                case "kg":
+                    weightInKg = inputWeight;
+                    break;
+                case "g":
+                    weightInKg = inputWeight / 1000;
+                    break;
+                case "lb":
+                    weightInKg = inputWeight / 2.20462;
+                    break;
+                case "oz":
+                    weightInKg = inputWeight / 35.274;
+                    break;
+            }
+
+            // Convert from kilograms to output unit
+            var outputWeight;
+            switch (outputUnit) {
+                case "kg":
+                    outputWeight = weightInKg;
+                    break;
+                case "g":
+                    outputWeight = weightInKg * 1000;
+                    break;
+                case "lb":
+                    outputWeight = weightInKg * 2.20462;
+                    break;
+                case "oz":
+                    outputWeight = weightInKg * 35.274;
+                    break;
+            }
+
+            // Display the output using SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Conversion Result',
+                html: `<strong>${inputWeight} ${inputUnit}</strong> is equal to <strong>${outputWeight.toFixed(2)} ${outputUnit}</strong>`,
+                confirmButtonColor: '#D4AF37'
+            });
+        }
+    </script>
+</body>
+</html>
