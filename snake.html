@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 </head>
 <style>
@@ -12,7 +13,9 @@
     padding: 0;
     box-sizing: border-box;
   }
+
   body {
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,89 +65,91 @@
     width: 100%;
     height: 100%;
   }
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
 
-.modal-content {
-  position: relative;
-  background: #333;
-  padding: 30px 20px;
-  border-radius: 8px;
-  color: #fff;
-  width: 90%;
-  max-width: 400px;
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-}
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
 
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  color: #fff;
-  cursor: pointer;
-}
+  .modal-content {
+    position: relative;
+    background: #333;
+    padding: 30px 20px;
+    border-radius: 8px;
+    color: #fff;
+    width: 90%;
+    max-width: 400px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
 
-.close-button:hover {
-  color: #4CAF50;
-}
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+  }
 
-h2 {
-  margin-bottom: 10px;
-  color: #4CAF50;
-  text-align : center;
-  font-weight: 900;
-  font-size: 2rem;
-}
-h3 {
+  .close-button:hover {
+    color: #4CAF50;
+  }
+
+  h2 {
     margin-bottom: 10px;
-  color: #4CAF50;
-  font-weight: 300;
-}
+    color: #4CAF50;
+    text-align: center;
+    font-weight: 900;
+    font-size: 2rem;
+  }
 
-.instructions-section {
-  margin-bottom: 15px;
-}
+  h3 {
+    margin-bottom: 10px;
+    color: #4CAF50;
+    font-weight: 300;
+  }
 
-.modal-content ul {
-  list-style: disc;
-  padding-left: 20px;
-  margin-top: 5px;
-}
+  .instructions-section {
+    margin-bottom: 15px;
+  }
 
-.modal-close-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-}
+  .modal-content ul {
+    list-style: disc;
+    padding-left: 20px;
+    margin-top: 5px;
+  }
 
-.modal-close-button:hover {
-  background-color: #45a049;
-}
+  .modal-close-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+  }
 
- p {
+  .modal-close-button:hover {
+    background-color: #45a049;
+  }
+
+  p {
     font-size: 1.5rem;
-}
-  
-  
+  }
+
+
   #topBar {
     display: none;
     width: 100%;
@@ -157,39 +162,114 @@ h3 {
     left: 0;
     z-index: 100;
   }
-  
-  .score{
-      font-size: 1.5rem;
-      font-weight: 900;
-        }
-        
-        .back,.pause {
-            background: transparent;
-            color: white;
-            font-size: 1.5rem;
-            border: none;
-        }
+
+  .score {
+    font-size: 1.5rem;
+    font-weight: 900;
+  }
+
+  .back,
+  .pause {
+    background: transparent;
+    color: white;
+    font-size: 1.5rem;
+    border: none;
+  }
+
+  #load {
+    background: #1a1a1a;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 500;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  #cp {
+    width: 350px;
+    margin: 25px auto;
+  }
+
+  #bd {
+    width: 100%;
+    background-color: #eee;
+    border-radius: 3px;
+    padding: 1px;
+    box-shadow: inset 0px 3px 1px #ddd;
+  }
+
+  #bf {
+    display: block;
+    width: 0%;
+    height: 10px;
+    background-color: #0f9816;
+    border-radius: 3px;
+    transition: width 0.05s ease;
+  }
+
+  h4 {
+
+    margin-bottom: 20px;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+  }
 </style>
+
 <body>
+  <div id="load">
+    <h1 class="title">SNAKE GAME</h1>
+    <div id="cp">
+      <div id="bd"><span id="bf"></span></div>
+    </div>
+    <script>
+      var e = document.querySelector("#bf");
+      var w = 0;
+      var interval = setInterval(function() {
+        e.style.width = w + "%";
+        w = w + 1;
+        if (w == 100) {
+          document.getElementById("load").style.display = "none";
+        }
+      }, 50);
+    </script>
+    <h4>Created by: BHO Develops</h4>
+  </div>
+
   <div class="container">
     <h1 class="title">SNAKE GAME</h1>
     <button class="button" onclick="startGame()">Play</button>
     <button class="button" onclick="showInstructions()">How to play</button>
     <button class="button" onclick="showHighScore()">High Score: <span id="highScore">0</span></button>
   </div>
-  <div id="gameCanvasContainer"> <div id="topBar"> <button onclick="goBack()" class="back"><i class="fa-solid fa-backward"></i></button> <span class="score">Score: <span id="scoreDisplay">0</span></span> 
-  
-  <button class="pause" onclick="togglePause()">
-  <i id="pauseResumeIcon" class="fas fa-pause"></i>
-</button>
+  <div id="gameCanvasContainer">
+    <div id="topBar"> <button onclick="goBack()" class="back"><i class="fa-solid fa-backward"></i></button> <span class="score">Score: <span id="scoreDisplay">0</span></span>
 
-  </div> 
-  <canvas id="gameCanvas"></canvas>
-   </div>
+      <button class="pause" onclick="togglePause()">
+        <i id="pauseResumeIcon" class="fas fa-pause"></i>
+      </button>
+
+    </div>
+    <canvas id="gameCanvas"></canvas>
+  </div>
   <script>
     let highScore = 0;
     let gameInterval;
     let isPaused = false;
+
+    // Load sound files
+    const turnSound = new Audio('TurnSound-VEED.mp3');
+    const eatSound = new Audio('EatSound-VEED.mp3');
+    const collisionSound = new Audio('DieSound-VEED.mp3');
 
     let canvas = document.getElementById("gameCanvas");
     let ctx = canvas.getContext("2d");
@@ -214,6 +294,7 @@ h3 {
     adjustCanvasSize();
 
     function startGame() {
+      preloadSounds();
       adjustCanvasSize();
       document.querySelector('.container').style.display = 'none';
       document.getElementById("gameCanvas").style.display = 'block';
@@ -224,7 +305,7 @@ h3 {
       score = 0;
       food = generateFood();
       isPaused = false;
-document.getElementById("scoreDisplay").innerText = score;
+      document.getElementById("scoreDisplay").innerText = score;
       gameInterval = setInterval(gameLoop, 100);
     }
 
@@ -252,29 +333,47 @@ document.getElementById("scoreDisplay").innerText = score;
     function checkCollisions() {
       let head = snake[0];
 
+      // Check collision with walls
       if (head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize) {
+        if (navigator.vibrate) {
+          navigator.vibrate(300); // Vibrate for 300ms on wall collision
+        }
+        collisionSound.play(); // Play collision sound
         gameOver();
       }
 
+      // Check collision with tail
       for (let i = 1; i < snake.length; i++) {
         if (snake[i].x === head.x && snake[i].y === head.y) {
+          if (navigator.vibrate) {
+            navigator.vibrate(300); // Vibrate for 300ms on tail collision
+          }
+          collisionSound.play(); // Play collision sound
           gameOver();
         }
       }
     }
 
     function checkFoodCollision() {
-  let head = snake[0];
+      let head = snake[0];
 
-  if (head.x === food.x && head.y === food.y) {
-    snake.push({});
-    score++;
-    if (score > highScore) highScore = score;
-    food = generateFood();
-    document.getElementById("highScore").innerText = highScore;
-    document.getElementById("scoreDisplay").innerText = score;  // Add this line to update the score on the top bar
-  }
-}
+      if (head.x === food.x && head.y === food.y) {
+        snake.push({});
+        score++;
+        if (score > highScore) highScore = score;
+        food = generateFood();
+        document.getElementById("highScore").innerText = highScore;
+        document.getElementById("scoreDisplay").innerText = score;
+
+        // Play eat sound
+        eatSound.play();
+
+        // Vibrate the device on collision
+        if (navigator.vibrate) {
+          navigator.vibrate(20);
+        }
+      }
+    }
 
     function generateFood() {
       let x = Math.floor(Math.random() * (canvas.width / gridSize));
@@ -300,8 +399,6 @@ document.getElementById("scoreDisplay").innerText = score;
       ctx.shadowBlur = 20;
       ctx.shadowColor = 'red';
       ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-
-      
     }
 
     function gameOver() {
@@ -314,42 +411,41 @@ document.getElementById("scoreDisplay").innerText = score;
       ctx.fillText('Score: ' + score, canvas.width / 3, canvas.height / 2 + 40);
       setTimeout(() => {
         const modal = document.createElement("div");
-  modal.classList.add("modal");
+        modal.classList.add("modal");
 
-  const modalContent = document.createElement("div");
-  modalContent.classList.add("modal-content");
+        const modalContent = document.createElement("div");
+        modalContent.classList.add("modal-content");
 
-  modalContent.innerHTML = `
-    <button class="close-button" onclick="closeModal()">&#10005;</button>
-    
-    <h2>Game Over</h2>
-    <center><img src="https://i.imghippo.com/files/IYI8411YsA.gif">
-    <p>Your score: <strong>${score}</strong></p>
-    <p>Try again to beat your high score!</p>
-    <button class="modal-close-button" onclick="restartGame()">Restart Game</button></center>
-  `;
+        modalContent.innerHTML = `
+        <button class="close-button" onclick="closeModal()">&#10005;</button>
+        <h2>Game Over</h2>
+        <center><img src="https://i.imghippo.com/files/IYI8411YsA.gif">
+        <p>Your score: <strong>${score}</strong></p>
+        <p>Try again to beat your high score!</p>
+        <button class="modal-close-button" onclick="restartGame()">Restart Game</button></center>
+      `;
 
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
-  
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
         document.querySelector('.container').style.display = 'block';
         document.getElementById("gameCanvas").style.display = 'none';
-      }, 10);
+      }, 500);
     }
-    
+
     function restartGame() {
-  closeModal();  // Close the game over modal
-  startGame();   // Start a new game
-}
+      closeModal();
+      startGame();
+    }
 
+    // Display instructions
     function showInstructions() {
-  const modal = document.createElement("div");
-  modal.classList.add("modal");
+      const modal = document.createElement("div");
+      modal.classList.add("modal");
 
-  const modalContent = document.createElement("div");
-  modalContent.classList.add("modal-content");
+      const modalContent = document.createElement("div");
+      modalContent.classList.add("modal-content");
 
-  modalContent.innerHTML = `
+      modalContent.innerHTML = `
     <button class="close-button" onclick="closeModal()">&#10005;</button>
     <h2>How to Play</h2>
     <p1><strong>Goal:</strong> Guide the snake to eat the food, which makes it grow. Avoid hitting the walls or your own tail!</p1>
@@ -376,10 +472,9 @@ document.getElementById("scoreDisplay").innerText = score;
     </div>
    
   `;
-
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
-}
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+    }
 
     function closeModal() {
       const modal = document.querySelector(".modal");
@@ -389,23 +484,36 @@ document.getElementById("scoreDisplay").innerText = score;
 
     function showHighScore() {
       const modal = document.createElement("div");
-  modal.classList.add("modal");
+      modal.classList.add("modal");
 
-  const modalContent = document.createElement("div");
-  modalContent.classList.add("modal-content");
+      const modalContent = document.createElement("div");
+      modalContent.classList.add("modal-content");
 
-  modalContent.innerHTML = `<button class="close-button" onclick="closeModal()">&#10005;</button>
-    <h2>High Score: ${highScore}</h2>`;
+      modalContent.innerHTML = `<button class="close-button" onclick="closeModal()">&#10005;</button>
+      <h2>High Score: ${highScore}</h2>`;
 
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
     }
 
+    // Add event listener for direction changes with sound
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
-      if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
-      if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
-      if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+      if (e.key === 'ArrowUp' && direction !== 'DOWN') {
+        direction = 'UP';
+        turnSound.play();
+      }
+      if (e.key === 'ArrowDown' && direction !== 'UP') {
+        direction = 'DOWN';
+        turnSound.play();
+      }
+      if (e.key === 'ArrowLeft' && direction !== 'RIGHT') {
+        direction = 'LEFT';
+        turnSound.play();
+      }
+      if (e.key === 'ArrowRight' && direction !== 'LEFT') {
+        direction = 'RIGHT';
+        turnSound.play();
+      }
       if (e.key === ' ') isPaused = !isPaused;
     });
 
@@ -420,34 +528,41 @@ document.getElementById("scoreDisplay").innerText = score;
       let diffY = e.touches[0].clientY - startTouch.y;
 
       if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (diffX > 0 && direction !== 'LEFT') direction = 'RIGHT';
-        else if (diffX < 0 && direction !== 'RIGHT') direction = 'LEFT';
+        if (diffX > 0 && direction !== 'LEFT') {
+          direction = 'RIGHT';
+          turnSound.play();
+        }
+        if (diffX < 0 && direction !== 'RIGHT') {
+          direction = 'LEFT';
+          turnSound.play();
+        }
       } else {
-        if (diffY > 0 && direction !== 'UP') direction = 'DOWN';
-        else if (diffY < 0 && direction !== 'DOWN') direction = 'UP';
+        if (diffY > 0 && direction !== 'UP') {
+          direction = 'DOWN';
+          turnSound.play();
+        }
+        if (diffY < 0 && direction !== 'DOWN') {
+          direction = 'UP';
+          turnSound.play();
+        }
       }
     });
-    
 
+    function togglePause() {
+      isPaused = !isPaused;
+      const pauseResumeIcon = document.getElementById("pauseResumeIcon");
+      const pauseResumeButton = pauseResumeIcon.parentElement;
 
-function togglePause() {
-  isPaused = !isPaused;
-  const pauseResumeIcon = document.getElementById("pauseResumeIcon");
-  const pauseResumeButton = pauseResumeIcon.parentElement;
-  
-  if (isPaused) {
-    pauseResumeIcon.classList.remove("fa-pause");
-    pauseResumeIcon.classList.add("fa-play");
-    pauseResumeButton.innerHTML = '<i id="pauseResumeIcon" class="fas fa-play"></i>'; // Change to Resume
-  } else {
-    pauseResumeIcon.classList.remove("fa-play");
-    pauseResumeIcon.classList.add("fa-pause");
-    pauseResumeButton.innerHTML = '<i id="pauseResumeIcon" class="fas fa-pause"></i>'; // Change to Pause
-  }
-}
-
-
-
+      if (isPaused) {
+        pauseResumeIcon.classList.remove("fa-pause");
+        pauseResumeIcon.classList.add("fa-play");
+        pauseResumeButton.innerHTML = '<i id="pauseResumeIcon" class="fas fa-play"></i>'; // Change to Resume
+      } else {
+        pauseResumeIcon.classList.remove("fa-play");
+        pauseResumeIcon.classList.add("fa-pause");
+        pauseResumeButton.innerHTML = '<i id="pauseResumeIcon" class="fas fa-pause"></i>'; // Change to Pause
+      }
+    }
 
     function goBack() {
       document.querySelector('.container').style.display = 'block';
@@ -455,7 +570,21 @@ function togglePause() {
       document.getElementById("topBar").style.display = 'none';
       clearInterval(gameInterval);
     }
-    
+
+    function preloadSounds() {
+      turnSound.play().then(() => {
+        turnSound.pause();
+        turnSound.currentTime = 0;
+      }).catch(() => {});
+
+      eatSound.play().then(() => {
+        eatSound.pause();
+        eatSound.currentTime = 0;
+      }).catch(() => {});
+
+      collisionSound.play().then(() => {
+        collisionSound.pause();
+        collisionSound.currentTime = 0;
+      }).catch(() => {});
+    }
   </script>
-</body>
-</html>
