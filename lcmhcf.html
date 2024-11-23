@@ -5,64 +5,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LCM & HCF Calculator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f7f7f7;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
 
         .container {
             background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 400px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 20px;
         }
 
         input[type="text"] {
-            padding: 10px;
-            margin: 10px 0;
+            padding: 15px;
+            margin: 15px 0;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            width: calc(100% - 22px);
+            border-radius: 8px;
+            width: 100%;
             font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 15px 25px;
             border: none;
             background-color: #007bff;
             color: white;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            margin: 5px;
-            width: 45%;
+            margin: 10px;
+            width: 48%;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        .swal-button {
-            width: 100% !important;
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+            transition: opacity 0.3s ease;
         }
 
-        .swal-footer {
-            text-align: center;
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
         }
 
-        .swal-content span {
-            
-            display: block;
+        .modal-header {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #333;
         }
+
+        .modal-footer {
+            margin-top: 20px;
+        }
+
+        .modal-footer button {
+            background-color: #007bff;
+        }
+
+        .modal-footer button:hover {
+            background-color: #218838;
+        }
+
+        
+        /* Steps Styling */
+        .steps {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .steps h3 {
+            font-size: 15px;
+            margin-bottom: 10px;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .steps p {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+        
     </style>
 </head>
 
@@ -70,14 +158,24 @@
 
     <div class="container">
         <h2>LCM & HCF Calculator</h2>
-        <input type="text" id="numbers" placeholder="Enter numbers separated by comma">
+        <input type="text" id="numbers" placeholder="(e.g., 12, 15, 20)">
         <div>
             <button onclick="calculate('lcm')">Calculate LCM</button>
             <button onclick="calculate('hcf')">Calculate HCF</button>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <!-- Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <div id="resultContent"></div>
+            <div id="stepsContent" class="steps"></div>
+            <div class="modal-footer">
+                <button onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function gcd(a, b) {
             return b === 0 ? a : gcd(b, a % b);
@@ -110,40 +208,33 @@
             return factorLists.reduce((common, factors) => common.filter(factor => factors.includes(factor)));
         }
 
+        function openModal(content, steps) {
+            const modal = document.getElementById("resultModal");
+            document.getElementById("resultContent").innerHTML = content;
+            document.getElementById("stepsContent").innerHTML = steps;
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("resultModal").style.display = "none";
+        }
+
         function calculate(type) {
             const input = document.getElementById('numbers').value.trim();
             if (!input) {
-                swal({
-                    title: "Error",
-                    text: "Please add numbers to calculate LCM or HCF!",
-                    icon: "error",
-                    dangerMode: true,
-                    button: {
-                        text: "OK",
-                        className: "swal-button",
-                    }
-                });
+                alert("Please add numbers to calculate LCM or HCF!");
                 return;
             }
 
             const numbers = input.split(',').map(Number);
 
             if (numbers.some(isNaN)) {
-                swal("Error", "Please enter valid numbers separated by commas!", "error");
+                alert("Please enter valid numbers separated by commas!");
                 return;
             }
 
             if (numbers.length < 2) {
-                swal({
-                    title: "Error",
-                    text: "Please add at least two numbers!",
-                    icon: "error",
-                    dangerMode: true,
-                    button: {
-                        text: "OK",
-                        className: "swal-button",
-                    }
-                });
+                alert("Please add at least two numbers!");
                 return;
             }
 
@@ -151,47 +242,32 @@
             if (type === 'hcf') {
                 result = calculateGCDForMultiple(numbers);
                 const commonFactors = findCommonFactors(numbers);
-                steps = `Find the factors for each number:<br><br>${numbers.map(num => `The factors of ${num} are ${JSON.stringify(findFactors(num))}`).join('<br><br>')}<br><br>Find the factors that are common to all ${numbers.length} numbers:<br><br>Common factors are ${JSON.stringify(commonFactors)}<br><br>The HCF is the largest factor common to all numbers:<br><br><strong>HCF is ${result}</strong>`;
+                steps = `
+                    <h3>Step 1: Find the factors for each number:</h3>
+                    <p>${numbers.map(num => `The factors of ${num} are: ${JSON.stringify(findFactors(num))}`).join('<br>')}</p>
+                    <h3>Step 2: Find the common factors:</h3>
+                    <p>The common factors are: ${JSON.stringify(commonFactors)}</p>
+                    <h3>Step 3: Identify the largest common factor:</h3>
+                    <p>The HCF is the largest common factor: <strong>${result}</strong></p>
+                `;
             } else {
                 result = calculateLCMForMultiple(numbers);
-                steps = `Find some multiples for each number:<br><br>${numbers.map(num => `Some multiples of ${num} are [${Array.from({ length: 10 }, (_, i) => num * (i + 1)).join(', ')} ...]`).join('<br><br>')}<br><br>Find the Lowest Common Multiple of the numbers ${numbers.join(', ')} is ${result} <br><br><strong>LCM is ${result}</strong>`;
+                steps = `
+                    <h3>Step 1: Find some multiples for each number:</h3>
+                    <p>${numbers.map(num => `Some multiples of ${num} are: ${Array.from({ length: 10 }, (_, i) => num * (i + 1)).join(', ')} ....`).join('<br>')}</p>
+                    <h3>Step 2: Find the smallest common multiple:</h3>
+                    <p>The LCM is the smallest common multiple: <strong>${result}</strong></p>
+                `;
             }
 
-            swal({
-                title: `Result: ${type.toUpperCase()}`,
-                content: {
-                    element: "span",
-                    attributes: {
-                        innerHTML: `<strong style="font-size: 1.5em; color: #000000;">${type.toUpperCase()} of ${numbers.join(', ')} is ${result}</strong>`
-                    },
-                },
-                icon: "success",
-                buttons: {
-                    confirm: {
-                        text: "Show Steps",
-                        value: "steps",
-                        className: "swal-button"
-                    }
-                }
-            }).then((value) => {
-                if (value === "steps") {
-                    swal({
-                        title: "Steps",
-                        content: {
-                            element: "span",
-                            attributes: {
-                                innerHTML: steps
-                            }
-                        },
-                        icon: "info",
-                        button: {
-                            text: "OK",
-                            className: "swal-button",
-                        }
-                    });
-                }
-            });
+            const resultContent = `<blockquote style="font-weight: bold; background: #f1f1f1; padding: 10px 15px; border-left: 4px solid #007bff;">${type.toUpperCase()} of ${numbers.join(', ')} is ${result}
+    </blockquote>`;
+    openModal(resultContent, steps);
         }
+        
+        
+        
+        
     </script>
 
 </body>
