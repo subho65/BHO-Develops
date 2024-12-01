@@ -85,7 +85,7 @@
         color: #333;
       }
 
-      .form-container input {
+      .form-container input{
         width: 100%;
         padding: 10px;
         margin-bottom: 15px;
@@ -94,7 +94,6 @@
         box-sizing: border-box;
         resize: vertical;
       }
-
       .form-container textarea {
         width: 100%;
         height: 100px;
@@ -131,7 +130,31 @@
         color: #333;
       }
 
-      @media (min-width: 600px) {
+      /* Toast styles */
+      .toast {
+        visibility: hidden;
+        max-width: 300px;
+        margin: 0 auto;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        border-radius: 4px;
+        padding: 10px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+      }
+
+      .toast.show {
+        visibility: visible;
+        opacity: 1;
+      }
+            @media (min-width: 600px) {
         .menu {
           display: flex;
           flex-direction: row;
@@ -187,6 +210,9 @@
       </div>
     </div>
 
+    <!-- Toast Message -->
+    <div id="toast" class="toast"></div>
+
     <!-- EmailJS SDK -->
     <script
       type="text/javascript"
@@ -204,19 +230,17 @@
       const form = document.getElementById("report-form");
       const submitBtn = document.getElementById("submit-btn");
       const loadingMessage = document.getElementById("loading");
+      const toast = document.getElementById("toast");
 
       document
         .getElementById("hamburger")
         .addEventListener("click", function (event) {
           var menu = document.getElementById("menu");
           menu.classList.toggle("active");
-          event.stopPropagation(); // Prevents click event on hamburger from propagating
+          event.stopPropagation();
         });
 
-      // Hide the menu if clicking outside
       document.addEventListener("click", function (event) {
-        var menu = document.getElementById("menu");
-        var hamburger = document.getElementById("hamburger");
         if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
           menu.classList.remove("active");
         }
@@ -241,24 +265,28 @@
           emailjs
             .send("service_znaosul", "template_66iob9t", templateParams)
             .then(
-              function (response) {
-                console.log("SUCCESS!", response.status, response.text);
-                alert("Your problem has been submitted. Thank you!");
+              function () {
+                showToast("Your problem has been submitted. Thank you!");
                 loadingMessage.style.display = "none";
                 submitBtn.disabled = false;
                 form.reset();
               },
-              function (error) {
-                console.log("FAILED...", error);
-                alert("Failed to submit the problem. Please try again later.");
+              function () {
+                showToast("Failed to submit the problem. Please try again later.");
                 loadingMessage.style.display = "none";
                 submitBtn.disabled = false;
               }
             );
         } else {
-          alert("Please fill in all the fields.");
+          showToast("Please fill in all the fields.");
         }
       });
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3000);
+      }
     </script>
   </body>
 </html>
