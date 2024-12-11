@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<style>
+  /* General Styling */
+  body {
+    font-family: "Courier New", Courier, monospace;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    overflow: hidden;
+  }
+
+  /* Loading Screen */
+  #loading-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  #loading-icon {
+    width: 200px;
+    height: auto;
+    animation: bounce 1.5s infinite;
+    border: 3px solid sandybrown;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+
+  #loading-text {
+    font-size: 1.5rem;
+    color: #333;
+    margin-top: 20px;
+    animation: fadeInOut 1.5s infinite;
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  #loading-bar {
+    width: 80%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  #loading-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #f39c12, #f1c40f);
+    animation: fill 5s linear forwards;
+  }
+
+  @keyframes fill {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  /* Difficulty Selection */
+  #level {
+    height: 300px;
+    width: 300px;
+    background-color: blueviolet;
+    z-index: 1;
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    border-radius: 10%;
+    visibility: hidden;
+    border: 5px solid #000;
+  }
+
+  #level_txt {
+    height: 50px;
+    width: 200px;
+    background-color: sandybrown;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    font-family: "Courier New", Courier, monospace;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -20px;
+    font-weight: bold;
+    border: 5px solid #000;
+  }
+
+  #level1,
+  #level2,
+  #level3 {
+    z-index: 1;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 50px;
+    width: 200px;
+    background-color: #eff;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    font-family: "Courier New", Courier, monospace;
+    border-width: 0 5px 0 5px;
+    border-style: solid;
+    border-color: #000;
+    cursor: pointer;
+  }
+
+  #level1 {
+    top: calc(50% - 50px);
+  }
+
+  #level2 {
+    top: calc(50% + 20px);
+  }
+
+  #level3 {
+    top: calc(50% + 90px);
+  }
+  
+  #hangman {
+    height: 50px;
+    width: 200px;
+    background-color: #0f0;
+    font-size: 35px;
+    font-family: "Courier New", Courier, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 1;
+    border: 4px solid #fff;
+    transform: skew(-15deg) translateX(-50%);
+    position: absolute;
+    top: calc(30% - 200px);
+    left: 50%;
+    font-weight: bold;
+  }
+  @media (min-width: 600px){
+   #hangman {
+    top: calc(35% - 200px);
+   }
+  }
+</style>
+
+<body>
+  <!-- header -->
+  <div id="hangman">HANGMAN</div>
+  
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <img src="https://i.imghippo.com/files/SFNp2128HZw.png" alt="Hangman Icon" id="loading-icon">
+    <div id="loading-text">Loading...</div>
+    <div id="loading-bar">
+      <div id="loading-fill"></div>
+    </div>
+  </div>
+
+  <!-- Difficulty Selection Screen -->
+  <div id="level">
+    <div id="level_txt">Level</div>
+    <div id="level1">Easy</div>
+    <div id="level2">Medium</div>
+    <div id="level3">Hard</div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loadingScreen = document.getElementById("loading-screen");
+      const levelScreen = document.getElementById("level");
+
+      // Wait for the loading animation to complete
+      setTimeout(() => {
+        // Hide the loading screen
+        loadingScreen.style.display = "none";
+
+        // Show the level selection screen
+        levelScreen.style.visibility = "visible";
+      }, 5500); // Match the duration of the loading bar animation
+    });
+    
+    document.getElementById("level1").addEventListener("click", function() {
+    // Redirect to easy-level.html or any other page
+    window.location.href = "easy.html";  // Make sure the HTML page exists
+  });
+  document.getElementById("level2").addEventListener("click", function() {
+    // Redirect to easy-level.html or any other page
+    window.location.href = "medium.html";  // Make sure the HTML page exists
+  });
+  document.getElementById("level3").addEventListener("click", function() {
+    // Redirect to easy-level.html or any other page
+    window.location.href = "hard.html"; // Make sure the HTML page exists
+  });
+  </script>
+</body>
+
+</html>
