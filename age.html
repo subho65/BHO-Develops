@@ -399,11 +399,17 @@
 
                 // Construct the age text with fade-in animation
                 const ageText = `
-                    You are <span>${years}</span> years old.<br><br>
+
+                    You are <span>${years}</span> years  <span>${months}</span> months <span>${days}</span> days <span>${hours}</span> hours <span>${minutes}</span> minutes <span>${seconds}</span> seconds old.<br><br>
+
                     Weeks: <span>${weeks}</span> | Months: <span>${years * 12 + months}</span><br>
+
                     Days: <span>${totalDays}</span> | Hours: <span>${totalHours}</span><br>
+
                     Minutes: <span>${totalMinutes}</span> | Seconds: <span>${totalSeconds}</span><br><br>
+
                 `;
+
 
                 outputElement.innerHTML = ageText;
                 outputElement.classList.add('active');
