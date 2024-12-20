@@ -15,6 +15,7 @@
       font-family: "Liberty";
       src: url("liberty.otf");
     }
+
     body {
       background-color: #efefef;
       margin: 0;
@@ -24,6 +25,7 @@
     }
 
     h1 {
+      font-family: "Liberty";
       font-size: 15pt;
       color: #333;
       text-align: center;
@@ -54,15 +56,14 @@
     .section {
       background-color: #fff;
       padding: 15px;
-      margin-bottom: 10px;
       border-radius: 10px;
+      margin: 1%;
     }
 
     #header {
       background-image: url("https://i.imghippo.com/files/MiVXx1729155547.jpg");
       background-size: cover;
       height: 250px;
-      margin-top: 50px;
     }
 
     #header img {
@@ -76,21 +77,6 @@
       font-size: 12pt;
       text-align: right;
       margin-top: 10px;
-    }
-
-    table {
-      width: 100%;
-    }
-
-    table,
-    th,
-    td {
-      border: 2px solid #cecece;
-      border-collapse: collapse;
-      text-align: center;
-      table-layout: fixed;
-      font-size: 10px;
-      padding: 10px;
     }
 
     .selected {
@@ -107,7 +93,6 @@
     progress {
       width: 90%;
       height: 20px;
-      color: #3fb6b2;
       background: #efefef;
     }
 
@@ -217,36 +202,31 @@
       #header {
         height: 300px;
         background-size: cover;
-        margin-top: 70px;
       }
 
       #header img {
         width: 202px;
         height: 202px;
-        
       }
 
       .hamburger {
         display: none;
       }
 
-      table,
-      th,
-      td {
-        font-size: 20px;
-      }
       #para {
         font-size: 20px;
       }
+
       .quote {
         font-size: 20px;
       }
-
     }
+
     .container {
       display: grid;
       max-width: 1200px;
-      margin: 20px auto;
+      grid-template-columns: 1fr;
+      margin: 60px auto;
     }
 
     /*header css*/
@@ -272,6 +252,8 @@
       transform: rotate(10deg);
       -webkit-animation: flicker 2s ease-in-out infinite alternate;
       animation: flicker 2s ease-in-out infinite alternate;
+      color: #ffcc00; /* Golden Yellow */
+      text-shadow: 0 0 10px #ffcc00, 0 0 15px #ff9900, 0 0 20px #ff6600;
     }
 
     @-webkit-keyframes flicker {
@@ -322,15 +304,127 @@
     }
 
     @media (min-width: 768px) {
-  body .text {
-    font-size: 5rem;
-    margin: 0; /* Increase font size for larger screens */
+      body .text {
+        font-size: 3.5rem;
+        margin: 0;
+      }
+
+      .container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+    }
+
+    .image-carousel {
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      background-color: #f0f0f0;
+      width: 320px;
+      overflow: hidden;
+      position: relative;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .carousel-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    .carousel-track img {
+      min-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 25px;
+      color: black;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      background: none;
+    }
+
+    .arrow.left {
+      left: 5px;
+    }
+
+    .arrow.right {
+      right: 5px;
+    }
+
+    .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.8); /* Black background with opacity */
+  display: none; /* Flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 700px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in-out; /* Optional: Add a fade-in animation */
+}
+
+.close {
+  position: absolute;
+  top: 10px; /* Adjusted for better alignment */
+  right: 20px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
   </style>
 
   <body>
+
+    
+
     <!-- Navbar with hamburger -->
     <div class="navbar">
       <div class="hamburger" id="hamburger">&#9776;</div>
@@ -370,11 +464,30 @@
         </h2>
       </div>
       <!-- header end -->
+      <!-- My Skills section start -->
+      <div class="section">
+        <h1><span>My Skills</span></h1>
+        <ul>
+          <li>
+            HTML (80%) <br />
+            <progress min="0" max="100" value="80"></progress>
+          </li>
+          <li>
+            CSS (70%) <br />
+            <progress min="0" max="100" value="70"></progress>
+          </li>
+          <li>
+            Javascript (60%) <br />
+            <progress min="0" max="100" value="60"></progress>
+          </li>
+        </ul>
+      </div>
+      <!-- My Skills section end -->
 
       <!-- About Me section start -->
       <div id="para" class="section">
         <h1><span>About Me</span></h1>
-        <p style="text-align: justify; line-height: 1.5">
+        <p style="text-align: justify; line-height: 1.15">
           Welcome to my world <b>BHO Develops</b>! I am Subhojati Dutta, a
           dedicated tutor with a degree in Mathematics Honours and a passion for
           teaching Science. Here, I share my enthusiasm for coding through
@@ -393,81 +506,53 @@
       </div>
       <!-- About Me section end -->
 
-      <!-- My Schedule section start -->
+      <!-- My certificate section start -->
       <div class="section">
-        <h1><span>My Coding Schedule</span></h1>
-        <table>
-          <tr>
-            <th>Day</th>
-            <th>Mon</th>
-            <th>Tue</th>
-            <th>Wed</th>
-            <th>Thu</th>
-            <th>Fri</th>
-          </tr>
-          <tr>
-            <td>8-8:30</td>
-            <td class="selected">Learn</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>9-10</td>
-            <td></td>
-            <td class="selected">Practice</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>1-1:30</td>
-            <td></td>
-            <td></td>
-            <td class="selected">Play</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>3:45-5</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="selected">Code</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>6-6:15</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td class="selected">Discuss</td>
-          </tr>
-        </table>
+        <h1><span>My Certificates</span></h1>
+        <section class="image-carousel">
+          <div class="carousel-container">
+            <button class="arrow left" id="left-arrow">
+              <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+            </button>
+            <div class="carousel-track">
+              <img
+                src="https://api2.sololearn.com/v2/certificates/CT-JCMPJDKX/image/png?t=638154165688708200"
+                alt="Certificate 1"
+                class="carousel-image"
+                data-src="https://api2.sololearn.com/v2/certificates/CT-JCMPJDKX/image/png?t=638154165688708200"
+              />
+              <img
+                src="https://api2.sololearn.com/v2/certificates/CC-2HN8E1LD/image/png?t=638668867965376490"
+                alt="Certificate 2"
+                class="carousel-image"
+                data-src="https://api2.sololearn.com/v2/certificates/CC-2HN8E1LD/image/png?t=638668867965376490"
+              />
+              <img
+                src="https://api2.sololearn.com/v2/certificates/CC-STVVN2O1/image/png?t=638702044307700510"
+                alt="Certificate 3"
+                class="carousel-image"
+                data-src="https://api2.sololearn.com/v2/certificates/CC-STVVN2O1/image/png?t=638702044307700510"
+              />
+              <img
+                src="https://courses.skillindiadigital.gov.in/api/custom_api/view_certificate/d3a0fc76882440f895cb6b006c816cda"
+                alt="Certificate 4"
+                class="carousel-image"
+                data-src="https://courses.skillindiadigital.gov.in/api/custom_api/view_certificate/d3a0fc76882440f895cb6b006c816cda"
+              />
+              <img
+                src="https://i.imghippo.com/files/GgW8020KZ.jpg"
+                alt="Certificate 5"
+                class="carousel-image"
+                data-src="https://i.imghippo.com/files/GgW8020KZ.jpg"
+              />
+            </div>
+            <button class="arrow right" id="right-arrow">
+              <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </section>
       </div>
-      <!-- My Schedule section end -->
-
-      <!-- My Skills section start -->
-      <div class="section">
-        <h1><span>My Skills</span></h1>
-        <ul>
-          <li>
-            HTML <br />
-            <progress min="0" max="100" value="80"></progress>
-          </li>
-          <li>
-            CSS <br />
-            <progress min="0" max="100" value="50"></progress>
-          </li>
-          <li>
-            Javascript<br />
-            <progress min="0" max="100" value="60"></progress>
-          </li>
-        </ul>
-      </div>
-      <!-- My Skills section end -->
+      <!-- My certificate section end -->
 
       <!-- Contacts section start -->
       <div class="section" id="contacts">
@@ -500,14 +585,24 @@
               src="https://i.imghippo.com/files/WkasB1729156447.png"
             />
           </a>
+          <a href="https://github.com/subho65" target="_blank">
+            <img
+              alt="github"
+              src="https://i.imghippo.com/files/dPI9073EOI.png"
+            />
+          </a>
         </div>
+        
       </div>
       <!-- Contacts section end -->
 
       <div class="copyright">© 2024 bhodevelops. All rights reserved.</div>
-      <!-- JavaScript to toggle the menu -->
-    </div>
 
+      <div id="modal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modal-image" alt="Certificate" />
+      </div>
+    
     <script>
       document
         .getElementById("hamburger")
@@ -525,6 +620,59 @@
           menu.classList.remove("active");
         }
       });
+
+      // Carousel navigation code (same as before)
+      const track = document.querySelector(".carousel-track");
+      const leftArrow = document.getElementById("left-arrow");
+      const rightArrow = document.getElementById("right-arrow");
+
+      let currentIndex = 0;
+
+      const updateCarousel = () => {
+        const slideWidth = track.children[0].getBoundingClientRect().width;
+        track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      };
+
+      leftArrow.addEventListener("click", () => {
+        currentIndex =
+          currentIndex > 0 ? currentIndex - 1 : track.children.length - 1;
+        updateCarousel();
+      });
+
+      rightArrow.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % track.children.length;
+        updateCarousel();
+      });
+
+      // Initialize the carousel
+      updateCarousel();
+
+      document.querySelectorAll('.carousel-track img').forEach((image) => {
+    image.addEventListener('click', (e) => {
+      const modal = document.getElementById('modal');
+      const modalImage = document.getElementById('modal-image');
+
+      // Set the modal image source to the clicked image
+      modalImage.src = e.target.src;
+
+      // Show the modal
+      modal.style.display = 'flex';
+    });
+  });
+
+  // Close modal when the close button is clicked
+  document.querySelector('.close').addEventListener('click', () => {
+    document.getElementById('modal').style.display = 'none';
+  });
+
+  // Close modal when clicking outside the image
+  document.getElementById('modal').addEventListener('click', (e) => {
+    if (e.target.id === 'modal') {
+      e.target.style.display = 'none';
+    }
+  });
+
     </script>
+   
   </body>
 </html>
