@@ -1,541 +1,645 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>Sliding Puzzle Game</title>
+  </head>
+  <style>
+    @font-face {
+      font-family: "Naluka";
+      src: url("/naluka.otf");
+    }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <title>Sliding Puzzle Game</title>
-</head>
-<style>
-  @font-face {
-    font-family: "Naluka";
-    src: url("/naluka.otf");
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: url("https://i.imghippo.com/files/WisT9293WjE.jpeg") no-repeat;
+      background-size: cover;
+      overflow: hidden;
+    }
 
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: url('https://i.imghippo.com/files/WisT9293WjE.jpeg') no-repeat;
-    background-size: cover;
-    overflow: hidden;
-  }
+    .game-container,
+    .grid-container {
+      text-align: center;
 
-  .game-container,
-  .grid-container {
-    text-align: center;
+      background-size: cover;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      background-image: url("https://i.imghippo.com/files/rP7169wp.jpg");
+      box-shadow: 2px 10px 10px black, inset -5px -5px 10px black,
+        inset 5px 5px 10px white;
+      width: 90%;
+      max-width: 500px;
+    }
 
-    background-size: cover;
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 20px;
-    background-image: url('https://i.imghippo.com/files/rP7169wp.jpg');
-    box-shadow: 2px 10px 10px black,
-      inset -5px -5px 10px black,
-      inset 5px 5px 10px white;
-    width: 90%;
-    max-width: 500px;
-  }
+    h1 {
+      font-family: naluka;
+      margin: 0;
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      z-index: 1;
+      /* Ensures it stays above other elements */
+      padding: 10px 0;
+    }
 
-  h1 {
-    font-family: naluka;
-    margin: 5%;
-    font-size: 2.5rem;
-    color: white;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
-    position: fixed;
-    top: 0;
-    z-index: 1;
-    /* Ensures it stays above other elements */
-    padding: 10px 0;
-  }
+    .grid-selector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
 
+    .grid-selector button {
+      margin: 5px 0;
+      font-family: naluka;
+      font-size: 2.5rem;
+      padding: 12px 25px;
+      color: #fff;
+      background: url("https://i.imghippo.com/files/WisT9293WjE.jpeg") no-repeat
+        center center;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 2px 10px 10px black, inset -2px -2px 5px black,
+        inset 2px 2px 5px white;
+      cursor: pointer;
+    }
 
-  .grid-selector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+    .grid-selector button:hover {
+      transform: translateY(-3px);
+      box-shadow: 2px 10px 10px black, inset -2px -2px 5px black,
+        inset 2px 2px 5px white;
+    }
 
-  .grid-selector button {
-    margin: 5px 0;
-    font-family: naluka;
-    font-size: 2.5rem;
-    padding: 12px 25px;
-    color: #fff;
-    background: url('https://i.imghippo.com/files/WisT9293WjE.jpeg') no-repeat center center;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 2px 10px 10px black,
-      inset -2px -2px 5px black,
-      inset 2px 2px 5px white;
-    cursor: pointer;
-  }
+    #puzzle-grid {
+      display: grid;
+      gap: 5px;
+      margin-top: 20px;
+      aspect-ratio: 1 / 1;
+      max-width: 400px;
+      margin: 20px auto;
+    }
 
-  .grid-selector button:hover {
-    transform: translateY(-3px);
-    box-shadow: 2px 10px 10px black,
-      inset -2px -2px 5px black,
-      inset 2px 2px 5px white;
-  }
+    .tile {
+      font-family: naluka;
+      text-shadow: -1px -1px 2px rgba(255, 255, 255, 0.7),
+        1px 1px 2px rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-size: cover;
+      color: white;
+      font-size: calc(1.5rem + 0.2vw);
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 2px 10px 10px black, inset -2px -2px 5px black,
+        inset 2px 2px 5px white;
+      background-image: url("https://i.imghippo.com/files/hEQ1629Mk.jpg");
 
-  #puzzle-grid {
-    display: grid;
-    gap: 5px;
-    margin-top: 20px;
-    aspect-ratio: 1 / 1;
-    max-width: 400px;
-    margin: 20px auto;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-  }
+    .tile.empty {
+      background: none;
+      cursor: default;
+      box-shadow: none;
+    }
 
-  .tile {
-    font-family: naluka;
-    text-shadow: -1px -1px 2px rgba(255, 255, 255, 0.7), 1px 1px 2px rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-size: cover;
-    color: white;
-    font-size: calc(1.5rem + 0.2vw);
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 2px 10px 10px black,
-      inset -2px -2px 5px black,
-      inset 2px 2px 5px white;
-    background-image: url('https://i.imghippo.com/files/hEQ1629Mk.jpg');
+    .tile.empty:hover {
+      box-shadow: none;
+    }
 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+    label {
+      color: white;
+      font-family: naluka;
+      text-shadow: 1px 1px 1px black;
+      font-size: 1.8rem;
+      margin: 5%;
+    }
 
-  .tile.empty {
-    background: none;
-    cursor: default;
-    box-shadow: none;
+    .game-controls {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin: 20px 0;
+    }
 
-  }
+    .game-controls button {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #ff9b00;
+      text-shadow: 1px 1px 1px #000000;
+    }
 
-  .tile.empty:hover {
-    box-shadow: none
-  }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
 
+    .modal-content {
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      width: 80%;
+      margin: 0 auto;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease-in-out;
+    }
 
+    .modal h2 {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.7rem;
+      color: #333;
+      margin: 10px 0;
+    }
 
-  label {
-    color: white;
-    font-family: naluka;
-    text-shadow: 1px 1px 1px black;
-    font-size: 1.8rem;
-    margin: 5%;
-  }
+    .modal p {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 1.2rem;
+      color: #555;
+    }
 
-  .game-controls {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin: 20px 0;
-  }
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 1px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: red;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
 
-  .game-controls button {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: #FF9B00;
-    text-shadow: 1px 1px 1px #000000
-  }
+    .modal-close:hover {
+      color: #007bff;
+    }
 
-  /* Modal Styles */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-  }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
 
-  .modal-content {
-    background: #fff;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    width: 80%;
-    margin: 0 auto;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.3s ease-in-out;
-  }
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
 
-  .modal h2 {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 1.5rem;
-    color: #333;
-    margin: 10px 0;
-  }
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #ff8c00;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+    }
 
-  .modal p {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 1rem;
-    color: #555;
-  }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
 
-  .modal-close {
-    position: absolute;
-    top: 10px;
-    right: 1px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: red;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .restart {
+      margin: 5px 0;
+      font-family: naluka;
+      font-size: 15px;
+      padding: 12px 25px;
+      color: #fff;
+      background: url("https://i.imghippo.com/files/WisT9293WjE.jpeg") no-repeat
+        center center;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 2px 10px 10px black, inset -2px -2px 5px black,
+        inset 2px 2px 5px white;
+      cursor: pointer;
+    }
 
-  .modal-close:hover {
-    color: #007bff;
-  }
-  
-  @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+    .restart:hover {
+      transform: translateY(-3px);
+      box-shadow: 2px 10px 10px black, inset -2px -2px 5px black,
+        inset 2px 2px 5px white;
+    }
+    @media (min-width: 768px) {
+      .modal h2 {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 3rem;
+        color: #333;
+        margin: 10px 0;
+      }
 
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
+      .modal p {
+        font-family: "Times New Roman", Times, serif;
+        font-size: 2rem;
+        color: #555;
+      }
+    }
+  </style>
 
-.spinner {
-  border: 8px solid #F3F3F3;
-  border-top: 8px solid #FF8C00;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
-
-<body>
-  <div class="loader" id="loader">
-<div class="spinner"></div>
-  </div>
-  
-  <h1>Number Puzzle</h1>
-  <div class="grid-container">
-
-    <div class="grid-selector">
-      <label>Select Grid Size: </label>
-      <button class="grid-size-btn" data-size="3">3 x 3</button>
-      <button class="grid-size-btn" data-size="4">4 x 4</button>
-      <button class="grid-size-btn" data-size="5">5 x 5</button>
-      <button class="grid-size-btn" data-size="6">6 x 6</button>
+  <body>
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
     </div>
-  </div>
 
-  <div class="game-container" id="game-container" style="display: none;">
-
-    <div class="game-controls">
-      <button id="back-button"><i class="fa-solid fa-arrow-left"></i></button>
-      <button id="reset-button"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+    <h1 id="header">Number Puzzle</h1>
+    <div class="grid-container">
+      <div class="grid-selector">
+        <label>Select Grid Size: </label>
+        <button class="grid-size-btn" data-size="3">3 x 3</button>
+        <button class="grid-size-btn" data-size="4">4 x 4</button>
+        <button class="grid-size-btn" data-size="5">5 x 5</button>
+        <button class="grid-size-btn" data-size="6">6 x 6</button>
+      </div>
     </div>
-    <div id="puzzle-grid"></div>
-  </div>
 
-  <!-- Modal -->
-  <div class="modal" id="congratulationsModal">
-    <div class="modal-content">
-      <button class="modal-close" id="closeModalButton">&#10005;</button>
-      <h2>&#127881;Congratulations!&#127881;</h2>
-      <p id="congratulationsMessage">You solved the puzzle!</p>
+    <div class="game-container" id="game-container" style="display: none">
+      <div class="game-controls">
+        <button id="back-button"><i class="fa-solid fa-arrow-left"></i></button>
+        <div
+          id="timer"
+          style="
+            font-size: 1.5rem;
+            color: #f3f3f3;
+            margin-top: 10px;
+            text-shadow: 1px 1px 1px #000000;
+          "
+        >
+          00:00:00
+        </div>
 
+        <button id="reset-button">
+          <i class="fa fa-repeat" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="puzzle-grid"></div>
     </div>
-  </div>
 
-  <script>
-  window.onload = function() {
-  const loader = document.getElementById("loader");
-  loader.style.display = "none"; // Hide loader after page load
-};
-    const moveSound = new Audio('move-sound.mp3');
-    moveSound.preload = 'auto';
+    <!-- Modal -->
+    <div class="modal" id="congratulationsModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeModalButton">&#10005;</button>
+        <h2>&#127881;Congratulations!&#127881;</h2>
+        <p id="congratulationsMessage">You solved the puzzle!</p>
+        <button class="restart" id="restart-game">Restart Game</button>
+      </div>
+    </div>
 
-    const gridSelector = document.querySelector(".grid-container");
-    const puzzleGrid = document.getElementById("puzzle-grid");
-    const gameContainer = document.getElementById("game-container");
-    const gridSizeButtons = document.querySelectorAll(".grid-size-btn");
-    const backButton = document.getElementById("back-button");
-    const resetButton = document.getElementById("reset-button");
-    const startGameButton = document.getElementById("start-game");
-    const closeModalButton = document.getElementById("closeModalButton");
-    const congratulationsModal = document.getElementById("congratulationsModal");
-    const congratulationsMessage = document.getElementById("congratulationsMessage");
+    <script>
+      window.onload = function () {
+        const loader = document.getElementById("loader");
+        loader.style.display = "none"; // Hide loader after page load
+      };
+      const moveSound = new Audio("move-sound.mp3");
+      moveSound.preload = "auto";
 
+      const gridSelector = document.querySelector(".grid-container");
+      const puzzleGrid = document.getElementById("puzzle-grid");
+      const gameContainer = document.getElementById("game-container");
+      const gridSizeButtons = document.querySelectorAll(".grid-size-btn");
+      const backButton = document.getElementById("back-button");
+      const resetButton = document.getElementById("reset-button");
+      const startGameButton = document.getElementById("start-game");
+      const closeModalButton = document.getElementById("closeModalButton");
+      const congratulationsModal = document.getElementById(
+        "congratulationsModal"
+      );
+      const congratulationsMessage = document.getElementById(
+        "congratulationsMessage"
+      );
+      const header = document.getElementById("header");
+      const restartGame = document.getElementById("restart-game");
 
+      let gridSize = 4; // Default grid size
+      let tiles = [];
+      let startTime;
+      let timerInterval; // To store the interval for the timer
+      let elapsedTime = 0; // Elapsed time in seconds
 
-    let gridSize = 4; // Default grid size
-    let tiles = [];
-    let startTime;
-
-    gridSizeButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        gridSize = parseInt(button.getAttribute("data-size"));
-        gridSelector.style.display = "none";
-        gameContainer.style.display = "block";
-        startGame();
+      gridSizeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          gridSize = parseInt(button.getAttribute("data-size"));
+          gridSelector.style.display = "none";
+          gameContainer.style.display = "block";
+          startGame();
+        });
       });
-    });
 
-    // Declare startTime at the beginning
+      // Declare startTime at the beginning
 
-    function startGame() {
-      startTime = new Date(); // Record the start time when the game starts
-      tiles = createTiles(gridSize);
-      renderPuzzle();
-    }
+      backButton.addEventListener("click", () => {
+        gameContainer.style.display = "none";
+        gridSelector.style.display = "block";
+        header.style.display = "block";
+        clearInterval(timerInterval);
+      });
 
-    backButton.addEventListener("click", () => {
-      gameContainer.style.display = "none";
-      gridSelector.style.display = "block";
-    });
+      resetButton.addEventListener("click", () => {
+        clearInterval(timerInterval); // Clear any existing timer intervals
+        startGame(); // Start a new game
+      });
 
-    resetButton.addEventListener("click", () => {
-      startGame();
-    });
+      function createTiles(size) {
+        const tileArray = [];
+        for (let i = 1; i < size * size; i++) {
+          tileArray.push(i);
+        }
+        tileArray.push(null); // Empty tile
 
-    function createTiles(size) {
-      const tileArray = [];
-      for (let i = 1; i < size * size; i++) {
-        tileArray.push(i);
+        do {
+          shuffle(tileArray);
+        } while (!isSolvable(tileArray, size)); // Ensure solvability
+
+        return tileArray;
       }
-      tileArray.push(null); // Empty tile
 
-      do {
-        shuffle(tileArray);
-      } while (!isSolvable(tileArray, size)); // Ensure solvability
-
-      return tileArray;
-    }
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function isSolvable(array, size) {
-      const inversions = countInversions(array);
-      const emptyRow = Math.floor(array.indexOf(null) / size);
-
-      if (size % 2 === 1) {
-        return inversions % 2 === 0;
-      } else {
-        const emptyRowFromBottom = size - emptyRow;
-        return (
-          (emptyRowFromBottom % 2 === 0 && inversions % 2 === 1) ||
-          (emptyRowFromBottom % 2 === 1 && inversions % 2 === 0)
-        );
-      }
-    }
-
-    function countInversions(array) {
-      const flatArray = array.filter((n) => n !== null);
-      let count = 0;
-      for (let i = 0; i < flatArray.length - 1; i++) {
-        for (let j = i + 1; j < flatArray.length; j++) {
-          if (flatArray[i] > flatArray[j]) count++;
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
         }
       }
-      return count;
-    }
 
-    function renderPuzzle() {
-      puzzleGrid.innerHTML = "";
-      puzzleGrid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-      puzzleGrid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+      function isSolvable(array, size) {
+        const inversions = countInversions(array);
+        const emptyRow = Math.floor(array.indexOf(null) / size);
 
-      // Adjust font size dynamically based on grid size
-      // Adjust font size based on grid size
-      let fontSize;
-      if (gridSize === 3) {
-        fontSize = 'calc(5rem + 1vw)'; // Larger font for 3x3
-      } else if (gridSize === 4) {
-        fontSize = 'calc(3rem + 1vw)'; // Medium font for 4x4
-      } else if (gridSize === 5) {
-        fontSize = 'calc(2rem + 0.8vw)'; // Smaller font for 5x5
-      } else {
-        fontSize = 'calc(1.3rem + 0.6vw)'; // Smallest font for 6x6
-      }
-
-      tiles.forEach((tile, index) => {
-        const tileElement = document.createElement("div");
-        tileElement.className = "tile";
-        tileElement.style.fontSize = fontSize; // Set the font size dynamically
-
-        if (tile === null) {
-          tileElement.classList.add("empty");
+        if (size % 2 === 1) {
+          return inversions % 2 === 0;
         } else {
-          tileElement.textContent = tile;
-          tileElement.addEventListener("click", () => moveTile(index));
+          const emptyRowFromBottom = size - emptyRow;
+          return (
+            (emptyRowFromBottom % 2 === 0 && inversions % 2 === 1) ||
+            (emptyRowFromBottom % 2 === 1 && inversions % 2 === 0)
+          );
         }
-        puzzleGrid.appendChild(tileElement);
+      }
+
+      function countInversions(array) {
+        const flatArray = array.filter((n) => n !== null);
+        let count = 0;
+        for (let i = 0; i < flatArray.length - 1; i++) {
+          for (let j = i + 1; j < flatArray.length; j++) {
+            if (flatArray[i] > flatArray[j]) count++;
+          }
+        }
+        return count;
+      }
+
+      function renderPuzzle() {
+        puzzleGrid.innerHTML = "";
+        puzzleGrid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+        puzzleGrid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+
+        // Adjust font size dynamically based on grid size
+        // Adjust font size based on grid size
+        let fontSize;
+        if (gridSize === 3) {
+          fontSize = "calc(5rem + 1vw)"; // Larger font for 3x3
+        } else if (gridSize === 4) {
+          fontSize = "calc(3rem + 1vw)"; // Medium font for 4x4
+        } else if (gridSize === 5) {
+          fontSize = "calc(2rem + 0.8vw)"; // Smaller font for 5x5
+        } else {
+          fontSize = "calc(1.3rem + 0.6vw)"; // Smallest font for 6x6
+        }
+
+        tiles.forEach((tile, index) => {
+          const tileElement = document.createElement("div");
+          tileElement.className = "tile";
+          tileElement.style.fontSize = fontSize; // Set the font size dynamically
+
+          if (tile === null) {
+            tileElement.classList.add("empty");
+          } else {
+            tileElement.textContent = tile;
+            tileElement.addEventListener("click", () => moveTile(index));
+          }
+          puzzleGrid.appendChild(tileElement);
+        });
+      }
+
+      function moveTile(index) {
+        const emptyIndex = tiles.indexOf(null);
+
+        if (canMoveMultipleTiles(index, emptyIndex)) {
+          moveMultipleTiles(index, emptyIndex);
+        } else {
+          const row = Math.floor(index / gridSize);
+          const col = index % gridSize;
+          const emptyRow = Math.floor(emptyIndex / gridSize);
+          const emptyCol = emptyIndex % gridSize;
+
+          if (
+            (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+            (col === emptyCol && Math.abs(row - emptyRow) === 1)
+          ) {
+            [tiles[index], tiles[emptyIndex]] = [
+              tiles[emptyIndex],
+              tiles[index],
+            ];
+            moveSound.currentTime = 0;
+            moveSound.play();
+            renderPuzzle();
+
+            // Check if the puzzle is solved after the move
+            if (isSolved()) {
+              const endTime = new Date(); // Record the end time
+              const timeTaken = Math.floor((endTime - startTime) / 1000); // Calculate the time taken in seconds
+              stopTimer();
+
+              setTimeout(() => {
+                showCongratulations(timeTaken); // Show the modal
+              }, 500);
+            }
+          }
+        }
+      }
+
+      closeModalButton.addEventListener("click", () => {
+        congratulationsModal.style.display = "none";
+        gameContainer.style.display = "none";
+        gridSelector.style.display = "block";
+        header.style.display = "block";
       });
-    }
 
-
-    function moveTile(index) {
-      const emptyIndex = tiles.indexOf(null);
-
-      if (canMoveMultipleTiles(index, emptyIndex)) {
-        moveMultipleTiles(index, emptyIndex);
-      } else {
+      function canMoveMultipleTiles(index, emptyIndex) {
         const row = Math.floor(index / gridSize);
         const col = index % gridSize;
         const emptyRow = Math.floor(emptyIndex / gridSize);
         const emptyCol = emptyIndex % gridSize;
 
-        if (
-          (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
-          (col === emptyCol && Math.abs(row - emptyRow) === 1)
-        ) {
-          [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
-          moveSound.currentTime = 0;
-          moveSound.play();
-          renderPuzzle();
+        // Check if tiles are aligned horizontally or vertically
+        if (row === emptyRow) {
+          // Horizontal movement
+          const direction = col < emptyCol ? 1 : -1;
+          for (let i = col + direction; i !== emptyCol; i += direction) {
+            if (tiles[row * gridSize + i] === null) return false; // Path is blocked
+          }
+          return true;
+        } else if (col === emptyCol) {
+          // Vertical movement
+          const direction = row < emptyRow ? 1 : -1;
+          for (let i = row + direction; i !== emptyRow; i += direction) {
+            if (tiles[i * gridSize + col] === null) return false; // Path is blocked
+          }
+          return true;
+        }
+        return false; // Not aligned
+      }
 
+      function moveMultipleTiles(index, emptyIndex) {
+        const row = Math.floor(index / gridSize);
+        const col = index % gridSize;
+        const emptyRow = Math.floor(emptyIndex / gridSize);
+        const emptyCol = emptyIndex % gridSize;
 
-          // Check if the puzzle is solved after the move
-          if (isSolved()) {
-            const endTime = new Date(); // Record the end time
-            const timeTaken = Math.floor((endTime - startTime) / 1000); // Calculate the time taken in seconds
+        if (row === emptyRow) {
+          // Horizontal movement
+          const direction = col < emptyCol ? 1 : -1;
+          for (let i = emptyCol; i !== col; i -= direction) {
+            tiles[row * gridSize + i] = tiles[row * gridSize + i - direction];
+          }
+          tiles[row * gridSize + col] = null;
+        } else if (col === emptyCol) {
+          // Vertical movement
+          const direction = row < emptyRow ? 1 : -1;
+          for (let i = emptyRow; i !== row; i -= direction) {
+            tiles[i * gridSize + col] = tiles[(i - direction) * gridSize + col];
+          }
+          tiles[row * gridSize + col] = null;
+        }
+        moveSound.currentTime = 0;
+        moveSound.play();
+        renderPuzzle();
 
-            setTimeout(() => {
-              congratulationsMessage.textContent = `You solved the puzzle in ${timeTaken} seconds!`;
-              congratulationsModal.style.display = "flex"; // Show the modal
-            }, 500);
+        if (isSolved()) {
+          const endTime = new Date(); // Record the end time
+          const timeTaken = Math.floor((endTime - startTime) / 1000); // Calculate the time taken in seconds
+          stopTimer();
+
+          setTimeout(() => {
+            showCongratulations(timeTaken);
+          }, 500);
+        }
+      }
+
+      function isSolved() {
+        for (let i = 0; i < tiles.length - 1; i++) {
+          if (tiles[i] !== i + 1) {
+            return false; // Puzzle is not solved
           }
         }
+        return true; // Puzzle is solved
       }
-    }
 
-    closeModalButton.addEventListener("click", () => {
-      congratulationsModal.style.display = "none"; // Close the modal
-      startGame(); // Reset the game after showing the modal
-    });
+      document
+        .getElementById("congratulationsModal")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "congratulationsModal") {
+            e.target.style.display = "none";
+            gameContainer.style.display = "none";
+            gridSelector.style.display = "block";
+            header.style.display = "block";
+            clearInterval(timerInterval);
+          }
+        });
 
-    function canMoveMultipleTiles(index, emptyIndex) {
-      const row = Math.floor(index / gridSize);
-      const col = index % gridSize;
-      const emptyRow = Math.floor(emptyIndex / gridSize);
-      const emptyCol = emptyIndex % gridSize;
+      restartGame.addEventListener("click", () => {
+        clearInterval(timerInterval);
+        congratulationsModal.style.display = "none";
+        startGame(); // Reinitialize the game
+      });
 
-      // Check if tiles are aligned horizontally or vertically
-      if (row === emptyRow) {
-        // Horizontal movement
-        const direction = col < emptyCol ? 1 : -1;
-        for (let i = col + direction; i !== emptyCol; i += direction) {
-          if (tiles[row * gridSize + i] === null) return false; // Path is blocked
-        }
-        return true;
-      } else if (col === emptyCol) {
-        // Vertical movement
-        const direction = row < emptyRow ? 1 : -1;
-        for (let i = row + direction; i !== emptyRow; i += direction) {
-          if (tiles[i * gridSize + col] === null) return false; // Path is blocked
-        }
-        return true;
+      function startGame() {
+        startTime = new Date(); // Record the start time when the game starts
+        elapsedTime = 0; // Reset elapsed time
+        gameStarted = true; // Game has started
+        tiles = createTiles(gridSize);
+        header.style.display = "none";
+        renderPuzzle();
+        timerInterval = setInterval(updateTimer, 1000); // Update every second
       }
-      return false; // Not aligned
-    }
 
-    function moveMultipleTiles(index, emptyIndex) {
-      const row = Math.floor(index / gridSize);
-      const col = index % gridSize;
-      const emptyRow = Math.floor(emptyIndex / gridSize);
-      const emptyCol = emptyIndex % gridSize;
-
-      if (row === emptyRow) {
-        // Horizontal movement
-        const direction = col < emptyCol ? 1 : -1;
-        for (let i = emptyCol; i !== col; i -= direction) {
-          tiles[row * gridSize + i] = tiles[row * gridSize + i - direction];
-        }
-        tiles[row * gridSize + col] = null;
-      } else if (col === emptyCol) {
-        // Vertical movement
-        const direction = row < emptyRow ? 1 : -1;
-        for (let i = emptyRow; i !== row; i -= direction) {
-          tiles[i * gridSize + col] = tiles[(i - direction) * gridSize + col];
-        }
-        tiles[row * gridSize + col] = null;
-      }
-      moveSound.currentTime = 0;
-      moveSound.play();
-      renderPuzzle();
-
-
-      if (isSolved()) {
-        const endTime = new Date(); // Record the end time
-        const timeTaken = Math.floor((endTime - startTime) / 1000); // Calculate the time taken in seconds
-
-        setTimeout(() => {
-          congratulationsMessage.textContent = `You solved the puzzle in ${timeTaken} seconds!`;
-          congratulationsModal.style.display = "flex"; // Show the modal
-        }, 500);
-      }
-    }
-
-
-    function isSolved() {
-      for (let i = 0; i < tiles.length - 1; i++) {
-        if (tiles[i] !== i + 1) {
-          return false; // Puzzle is not solved
+      // Update the timer every second
+      function updateTimer() {
+        if (gameStarted) {
+          elapsedTime++; // Increase elapsed time by 1 second
+          const hours = String(Math.floor(elapsedTime / 3600)).padStart(2, "0");
+          const minutes = String(
+            Math.floor((elapsedTime % 3600) / 60)
+          ).padStart(2, "0");
+          const seconds = String(elapsedTime % 60).padStart(2, "0");
+          document.getElementById(
+            "timer"
+          ).textContent = `${hours}:${minutes}:${seconds}`;
         }
       }
-      return true; // Puzzle is solved
-    }
 
-    document.getElementById('congratulationsModal').addEventListener('click', (e) => {
-      if (e.target.id === 'congratulationsModal') {
-        e.target.style.display = 'none';
+      // Stop the timer when the puzzle is solved
+      function stopTimer() {
+        clearInterval(timerInterval); // Stop the interval when the puzzle is solved
       }
-    });
-  </script>
-</body>
+      function showCongratulations(timeTaken) {
+        const hours = Math.floor(timeTaken / 3600); // Hours
+        const minutes = Math.floor((timeTaken % 3600) / 60); // Minutes
+        const seconds = timeTaken % 60; // Seconds
 
+        let timeString = "";
+
+        if (hours > 0) {
+          timeString += `${hours}h `;
+        }
+        if (minutes > 0 || hours > 0) {
+          timeString += `${minutes}m `;
+        }
+        timeString += `${seconds}s`;
+
+        congratulationsMessage.textContent = `You solved the puzzle in ${timeString}`;
+        congratulationsModal.style.display = "flex"; // Show the modal
+      }
+    </script>
+  </body>
 </html>
