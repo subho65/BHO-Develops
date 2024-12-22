@@ -29,7 +29,6 @@
       #board-container {
         display: none;
         text-align: center;
-
       }
 
       #current-player {
@@ -234,14 +233,12 @@
         margin: 5%;
       }
       .title2 {
-      font-size: 2.5rem;
-      color: white;
-      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
+        font-size: 2.5rem;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
     </style>
   </head>
   <body>
@@ -261,7 +258,7 @@
     </div>
 
     <div id="board-container">
-        <h1 class="title2">TIC TAC TOE</h1>
+      <h1 class="title2" id="levels"></h1>
       <div class="game-controls">
         <button id="back-button"><i class="fa-solid fa-arrow-left"></i></button>
         <button id="reset-btn" onclick="resetBoard()">
@@ -329,48 +326,20 @@
         resetBoard();
       }
       function startGame(difficulty) {
+        const levelsHeading = document.getElementById("levels");
+        if (difficulty === "friend") {
+          levelsHeading.textContent = "Play with Friend";
+        } else {
+          levelsHeading.textContent =
+            "Level:" +
+            " " +
+            difficulty.charAt(0).toUpperCase() +
+            difficulty.slice(1);
+        }
         document.getElementById("start-screen").style.display = "none";
         document.getElementById("board-container").style.display = "block";
         isPlayingWithFriend = difficulty === "friend";
         currentDifficulty = difficulty;
-      }
-
-      function makeMove(index) {
-        if (!isGameOver && board[index] === "") {
-          board[index] = currentPlayer;
-          const cell = document.getElementsByClassName("cell")[index];
-          cell.innerText = currentPlayer;
-          checkGameStatus();
-
-          if (!isGameOver) {
-            switchPlayer();
-
-            if (currentPlayer === "O" && !isPlayingWithFriend) {
-              setTimeout(() => {
-                if (currentDifficulty === "easy") makeRandomMove();
-                else if (currentDifficulty === "medium") makeMediumMove();
-                else if (currentDifficulty === "hard") makeHardMove();
-
-                switchPlayer();
-              }, 1000);
-            }
-          }
-        }
-      }
-
-      function switchPlayer() {
-        currentPlayer = currentPlayer === "X" ? "O" : "X";
-
-        const playerXBox = document.getElementById("player-x-box");
-        const playerOBox = document.getElementById("player-o-box");
-
-        if (currentPlayer === "X") {
-          playerXBox.classList.add("active");
-          playerOBox.classList.remove("active");
-        } else {
-          playerXBox.classList.remove("active");
-          playerOBox.classList.add("active");
-        }
       }
 
       function checkGameStatus() {
@@ -421,44 +390,6 @@
         document.getElementById("player-o-box").classList.remove("active");
       }
 
-      function makeRandomMove() {
-        const availableMoves = board
-          .map((val, i) => (val === "" ? i : null))
-          .filter((val) => val !== null);
-        if (availableMoves.length > 0) {
-          const move =
-            availableMoves[Math.floor(Math.random() * availableMoves.length)];
-          board[move] = currentPlayer;
-          document.getElementsByClassName("cell")[move].innerText =
-            currentPlayer;
-          checkGameStatus();
-          switchPlayer();
-          currentPlayer = currentPlayer === "X" ? "O" : "X";
-        }
-      }
-      function makeMediumMove() {
-        let bestMove = getBestMove("O");
-        if (bestMove !== null) {
-          board[bestMove] = currentPlayer;
-          document.getElementsByClassName("cell")[bestMove].innerText =
-            currentPlayer;
-          switchPlayer();
-          checkGameStatus();
-          currentPlayer = currentPlayer === "X" ? "O" : "X";
-          return;
-        }
-        bestMove = getBestMove("X");
-        if (bestMove !== null) {
-          board[bestMove] = currentPlayer;
-          document.getElementsByClassName("cell")[bestMove].innerText =
-            currentPlayer;
-          switchPlayer();
-          checkGameStatus();
-          currentPlayer = currentPlayer === "X" ? "O" : "X";
-          return;
-        }
-        makeRandomMove();
-      }
       function getBestMove(player) {
         const winningCombinations = [
           [0, 1, 2],
@@ -481,27 +412,7 @@
         }
         return null;
       }
-      function makeHardMove() {
-        let bestScore = -Infinity;
-        let bestMove;
-        for (let i = 0; i < board.length; i++) {
-          if (board[i] === "") {
-            board[i] = currentPlayer;
-            const score = minimax(board, 0, false);
-            board[i] = "";
-            if (score > bestScore) {
-              bestScore = score;
-              bestMove = i;
-            }
-          }
-        }
-        board[bestMove] = currentPlayer;
-        document.getElementsByClassName("cell")[bestMove].innerText =
-          currentPlayer;
-        checkGameStatus();
-        switchPlayer();
-        currentPlayer = currentPlayer === "X" ? "O" : "X";
-      }
+
       function minimax(board, depth, isMaximizingPlayer) {
         const scores = { X: -1, O: 1, draw: 0 };
         const result = checkWinner();
@@ -529,6 +440,100 @@
             }
           }
           return bestScore;
+        }
+      }
+
+      let isAiTurn = false; // Flag to track AI's turn
+
+      function makeMove(index) {
+        if (!isGameOver && board[index] === "" && !isAiTurn) {
+          board[index] = currentPlayer;
+          const cell = document.getElementsByClassName("cell")[index];
+          cell.innerText = currentPlayer;
+          checkGameStatus();
+
+          if (!isGameOver) {
+            switchPlayer();
+
+            if (currentPlayer === "O" && !isPlayingWithFriend) {
+              isAiTurn = true; // Prevent human input during AI's turn
+              setTimeout(() => {
+                if (currentDifficulty === "easy") makeRandomMove();
+                else if (currentDifficulty === "medium") makeMediumMove();
+                else if (currentDifficulty === "hard") makeHardMove();
+
+                switchPlayer();
+                isAiTurn = false; // Allow human input after AI's turn
+              }, 1000);
+            }
+          }
+        }
+      }
+
+      function makeRandomMove() {
+        const availableMoves = board
+          .map((val, i) => (val === "" ? i : null))
+          .filter((val) => val !== null);
+        if (availableMoves.length > 0) {
+          const move =
+            availableMoves[Math.floor(Math.random() * availableMoves.length)];
+          board[move] = currentPlayer;
+          document.getElementsByClassName("cell")[move].innerText =
+            currentPlayer;
+          checkGameStatus();
+        }
+      }
+
+      function makeMediumMove() {
+        let bestMove = getBestMove("O");
+        if (bestMove !== null) {
+          board[bestMove] = currentPlayer;
+          document.getElementsByClassName("cell")[bestMove].innerText =
+            currentPlayer;
+          checkGameStatus();
+          return;
+        }
+        bestMove = getBestMove("X");
+        if (bestMove !== null) {
+          board[bestMove] = currentPlayer;
+          document.getElementsByClassName("cell")[bestMove].innerText =
+            currentPlayer;
+          checkGameStatus();
+          return;
+        }
+        makeRandomMove();
+      }
+
+      function makeHardMove() {
+        let bestScore = -Infinity;
+        let bestMove;
+        for (let i = 0; i < board.length; i++) {
+          if (board[i] === "") {
+            board[i] = currentPlayer;
+            const score = minimax(board, 0, false);
+            board[i] = "";
+            if (score > bestScore) {
+              bestScore = score;
+              bestMove = i;
+            }
+          }
+        }
+        board[bestMove] = currentPlayer;
+        document.getElementsByClassName("cell")[bestMove].innerText =
+          currentPlayer;
+        checkGameStatus();
+      }
+
+      function switchPlayer() {
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        const playerXBox = document.getElementById("player-x-box");
+        const playerOBox = document.getElementById("player-o-box");
+        if (currentPlayer === "X") {
+          playerXBox.classList.add("active");
+          playerOBox.classList.remove("active");
+        } else {
+          playerXBox.classList.remove("active");
+          playerOBox.classList.add("active");
         }
       }
     </script>
