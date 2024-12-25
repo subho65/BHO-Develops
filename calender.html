@@ -1,0 +1,347 @@
+</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar Viewer</title>
+  <style>
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: linear-gradient(to bottom right, #ff9a9e, #fad0c4);
+      min-height: 100vh;
+      /* Ensures background covers entire viewport */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+
+    .container {
+      width: 80%;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #3C83F6;
+    }
+
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: linear-gradient(to right, #3C83F6, #2CDB00);
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #2CDB00, #3C83F6);
+      transform: scale(1.05);
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-family: 'Times New Roman', Times, serif;
+
+    }
+
+    th,
+    td {
+      padding: 5px;
+      text-align: center;
+
+    }
+
+    th {
+      background-color: none;
+      color: rgb(0, 0, 0);
+      font-weight: 100;
+    }
+
+    td {
+      font-family: 'Times New Roman', Times, serif;
+      color: #000;
+    }
+
+    .month-header {
+      text-align: center;
+      font-size: 1.5em;
+      background-color: #3C83F6;
+      color: #fff;
+    }
+
+    #downloadBtn {
+      margin: 2% auto;
+      display: none;
+    }
+
+    @media (min-width: 600px) {
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 5px;
+        margin-top: 20px;
+      }
+    }
+
+    .headeryear {
+      text-align: center;
+      margin: 2%;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Any Year's Calendar</h1>
+    <label for="year">Year:</label>
+    <input type="number" id="year" placeholder="Enter Year" required maxlength="4">
+    <label for="months">Month(s):</label>
+    <input type="text" id="months" placeholder="Enter Month(s) (1,2 or 1-12)" required>
+    <button onclick="generateCalendar()">Show Calendar</button>
+    <button onclick="downloadPDF()" id="downloadBtn">Download as PDF</button>
+    <div class="headeryear">
+      <span id="headerYear"></span>
+    </div>
+    <div id="calendarOutput" class="calendar"></div>
+
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    function generateCalendar() {
+      const year = document.getElementById("year").value;
+      let monthsInput = document.getElementById("months").value.trim();
+
+      if (!year || !monthsInput) {
+        alert("Please provide both year and month(s).");
+        return;
+      }
+      document.getElementById("headerYear").textContent = `Yearly Calender of ${year}`;
+      let months = [];
+
+      // Handle month range like "1-12"
+      if (monthsInput.includes('-')) {
+        const [start, end] = monthsInput.split('-').map(m => parseInt(m.trim()));
+        if (start >= 1 && end <= 12 && start <= end) {
+          for (let i = start; i <= end; i++) {
+            months.push(i);
+          }
+        } else {
+          alert("Invalid range. Please enter months between 1 and 12.");
+          return;
+        }
+      } else {
+        // Handle individual months, comma-separated (e.g., "1,2,3")
+        months = monthsInput.split(',').map(m => parseInt(m.trim()));
+        if (months.some(m => m < 1 || m > 12)) {
+          alert("Invalid month. Please enter month numbers between 1 and 12.");
+          return;
+        }
+      }
+
+      let calendarOutput = "";
+      months.forEach(month => {
+        const cal = new Date(year, month - 1, 1);
+        let monthOutput = "<table><thead>";
+
+        // Add the month and year header inside the table
+        monthOutput += `<tr><th colspan="7" class="month-header">${cal.toLocaleString('default', { month: 'long' })}</th></tr>`;
+
+        // Add the days of the week header
+        monthOutput += "<tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr></thead><tbody>";
+
+        const firstDay = new Date(year, month - 1, 1).getDay();
+        const daysInMonth = new Date(year, month, 0).getDate();
+
+        let dayCounter = 1;
+        for (let i = 0; i < 6; i++) {
+          let week = "<tr>";
+          for (let j = 0; j < 7; j++) {
+            if (i === 0 && j < firstDay) {
+              week += "<td></td>"; // Empty space before first day of the month
+            } else if (dayCounter <= daysInMonth) {
+              week += `<td>${dayCounter}</td>`;
+              dayCounter++;
+            } else {
+              week += "<td></td>"; // Empty cells for the remaining days
+            }
+          }
+          week += "</tr>";
+          monthOutput += week;
+          if (dayCounter > daysInMonth) break;
+        }
+
+        monthOutput += "</tbody></table>";
+        calendarOutput += monthOutput;
+      });
+
+
+      document.getElementById("calendarOutput").innerHTML = calendarOutput;
+      document.getElementById("downloadBtn").style.display = 'block'; // Show the download button
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+
+      const year = document.getElementById("year").value;
+      const monthsInput = document.getElementById("months").value.trim();
+      const calendarOutput = document.getElementById("calendarOutput");
+
+      if (!calendarOutput.innerHTML.trim()) {
+        alert("No calendar to download. Please generate the calendar first.");
+        return;
+      }
+
+      const months = [];
+      if (monthsInput.includes('-')) {
+        const [start, end] = monthsInput.split('-').map(m => parseInt(m.trim()));
+        for (let i = start; i <= end; i++) months.push(i);
+      } else {
+        monthsInput.split(',').map(m => months.push(parseInt(m.trim())));
+      }
+
+      const doc = new jsPDF('p', 'mm', 'a4'); // A4 page size
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      // Define margins and layout
+      const margin = 15; // 15mm margin around the page
+      const usableWidth = pageWidth - 2 * margin;
+      const usableHeight = pageHeight - 2 * margin;
+
+      const gridCols = 3; // 3 months per row
+      const gridRows = 4; // Maximum 4 rows (for 12 months)
+      const horizontalSpacing = 5; // Space between columns
+      const verticalSpacing = 2; // Space between rows
+      const cellWidth = (usableWidth - horizontalSpacing * (gridCols - 1)) / gridCols; // Width of each month's table
+      const cellHeight = (usableHeight - verticalSpacing * (gridRows - 1)) / gridRows - 2;
+      // Height of each month's table (including header)
+
+      let x = margin;
+      let y = margin;
+
+      doc.setFontSize(15);
+      doc.setFont("times", "normal");
+
+      // "BHO Develops" text
+      doc.text("BHO Develops", pageWidth - margin, y, { align: "right" });
+
+      doc.setFont("time", "italic");
+      doc.setFontSize(30);
+      doc.text("Calendar", pageWidth / 2, y, { align: "center" });
+
+      doc.setFont("times", "normal");
+      doc.setFontSize(30);
+      doc.text(`${year}`, margin, y);
+
+      // Adjust y position for the year text
+      y += 7; // Add some space between "BHO Develops" and the year
+
+
+
+      months.forEach((month, index) => {
+        const cal = new Date(year, month - 1, 1);
+        const monthName = cal.toLocaleString('default', { month: 'long' });
+
+        // Calculate column and row for grid positioning
+        const col = index % gridCols;
+        const row = Math.floor(index / gridCols);
+
+        x = margin + col * (cellWidth + horizontalSpacing);
+        y = 20 + row * (cellHeight + verticalSpacing);
+
+        // Draw month header with background!
+        doc.setTextColor(255, 255, 255);
+        doc.setFillColor(59, 130, 246); // Light blue
+        doc.rect(x, y, cellWidth, 8, "F"); // Reduced height of month header
+        doc.setFontSize(15);
+        doc.setFont("times", "bold");
+        doc.text(`${monthName}`, x + cellWidth / 2, y + 5.5, { align: "center" });
+
+        // Draw table header for days of the week
+        const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+        const dayCellWidth = cellWidth / 7;
+        const daysOfWeekY = y + 8; // Immediately below month header
+        daysOfWeek.forEach((day, i) => {
+          doc.setTextColor(0, 0, 0);
+          doc.setFontSize(11);
+          doc.setFont("times", "normal");
+          doc.text(day, x + i * dayCellWidth + dayCellWidth / 2, daysOfWeekY + 5, { align: "center" });
+        });
+
+        // Draw table body for calendar days
+        const calendarStartY = daysOfWeekY + (cellHeight / 8); // Start below the days of the week
+        const firstDay = new Date(year, month - 1, 1).getDay();
+        const daysInMonth = new Date(year, month, 0).getDate();
+        let dayCounter = 1;
+
+        doc.setFont("times", "normal");
+        for (let week = 0; week < 6; week++) {
+          for (let day = 0; day < 7; day++) {
+            const dayX = x + day * dayCellWidth;
+            const dayY = calendarStartY + week * (cellHeight / 8);
+
+            if (week === 0 && day < firstDay) {
+              // Skip empty cells before the first day of the month
+              continue;
+            } else if (dayCounter <= daysInMonth) {
+              doc.text(String(dayCounter), dayX + dayCellWidth / 2, dayY + 5, { align: "center" });
+              dayCounter++;
+            }
+          }
+        }
+      });
+
+      doc.save('calendar.pdf');
+    }
+  </script>
+
+</body>
+
+</html>
