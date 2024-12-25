@@ -43,6 +43,7 @@ BHO-Develops/
 ├── resume.html              # Resume maker
 ├── notes.html               # Notes maker 
 ├── wallpaper.html           # Make wallpaper using text
+├── calendar.html            # Generate calendar of any year and download as pdf
 
 # Games
 ├── flappybird.html          # Flappy Bird Game
