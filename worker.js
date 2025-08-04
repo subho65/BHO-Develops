@@ -1,5 +1,5 @@
 // Import the dictionary.js file at the top of the worker.js
-importScripts('https://rawcdn.githack.com/subho65/subhojati/refs/heads/main/dictionary.js'); // This imports the dictionary into the worker context
+importScripts('dictionary.js'); // This imports the dictionary into the worker context
 
 // Trie and TrieNode classes
 class TrieNode {
@@ -107,3 +107,4 @@ self.onmessage = function(event) {
 
     self.postMessage(meaningfulWords);
 };
+
